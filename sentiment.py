@@ -35,7 +35,7 @@ st.header('Twitter Sentiment Analysis')
 st.markdown("##")
 
 #side bar
-st.sidebar.image("image/sev.jpg",caption="Developed and Maintaned by: Hidayah Athira")
+st.sidebar.image("image/carat.png",caption="Developed and Maintaned by: Hidayah Athira")
          
 #switcher
 st.sidebar.header("Twitter Analysis")
