@@ -30,7 +30,7 @@ from gensim.models import Word2Vec
 
 
 # Load the Word2Vec model
-word2vec_model = Word2Vec.load("models/word2vec_model.bin")
+word2vec_model = Word2Vec.load("path_to_your_word2vec_model")
 
 
 im = Image.open("image/carat.ico")
