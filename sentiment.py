@@ -360,3 +360,4 @@ def sideBar():
     #st.subheader(f"Page: {selected}")
     Home()
 
+sideBar()
