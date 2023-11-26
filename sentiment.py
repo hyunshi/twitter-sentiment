@@ -26,7 +26,7 @@ from sklearn.naive_bayes import MultinomialNB, BernoulliNB
 from PIL import Image
 from tqdm import tqdm
 from wordcloud import WordCloud
-from gensim.models import Word2Vec
+
 
 
 im = Image.open("image/carat.ico")
@@ -161,15 +161,6 @@ def Home():
 
                     df['tweets'] = df['tweets'].apply(tokenize)
                     df['tweets'].head()
-
-                    # Vectorize the text data using Word2Vec embeddings
-                    def get_word_embeddings(tokens):
-                          embeddings = [word2vec_model.wv[word] for word in tokens if word in word2vec_model.wv]
-                          return np.mean(embeddings, axis=0) if embeddings else np.zeros(word2vec_model.vector_size)
-
-                    # Apply the word embeddings to your DataFrame
-                    df['word_embeddings'] = df['tweets'].apply(get_word_embeddings)
-
 
                     # Initialize sentiment counts
                     sentiment_counts = {"Positive": 0, "Negative": 0, "Neutral": 0}
@@ -313,12 +304,9 @@ def visualize(df):
                             df['neutral_percentage'] = neutral_percentages
 
                             vectorizer = TfidfVectorizer(max_features=500000)
-                            
-                            # Join the lists of tokens into strings
-                            embeddings_list = df['word_embeddings'].to_list()
 
                             # Convert the list of arrays to a 2D NumPy array
-                            X = np.vstack(embeddings_list)
+                            X = vectorizer.fit_transform(df['tweets_str'])
                             y = df['sentiment']
                                  
                             # Convert sentiment labels to numerical values
