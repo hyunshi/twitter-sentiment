@@ -27,7 +27,7 @@ from PIL import Image
 from tqdm import tqdm
 from wordcloud import WordCloud
 
-
+word2vec_model = Word2Vec.load("path_to_your_word2vec_model")
 
 im = Image.open("image/carat.ico")
 st.set_page_config(page_title="FeelTech",page_icon=im,layout="wide")
