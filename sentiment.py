@@ -38,7 +38,7 @@ st.sidebar.image("image/sev.jpg",caption="Developed and Maintaned by: Hidayah At
          
 #switcher
 st.sidebar.header("Twitter Analysis")
-if __name__ == "__main__":
+def Home():
     with st.expander('Analyze tweets'):
             tweets = st.text_input('tweets here: ')
             if tweets:
