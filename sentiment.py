@@ -355,7 +355,7 @@ def visualize(df):
                             grid_search = GridSearchCV(BNBmodel, param_grid, cv=5, scoring='accuracy')
                             
                             # Get the best hyperparameters
-                            best_alpha = grid_search.best_params_['alpha']
+                            best_alpha = grid_search.best_estimator_.get_params()['alpha']
                            
                             # Train the model with the best hyperparameters
                             best_model = BernoulliNB(alpha=best_alpha)
