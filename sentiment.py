@@ -235,8 +235,8 @@ def Home():
                         st.write("Neutral Percentage: {:.2f}%".format(neutral_percentage))
                         st.progress(neutral_percentage / 100)
                         st.dataframe(df, use_container_width=True)
-                             # Return the processed DataFrame
-             return df
+                             
+         return df
                         
 def visualize(df):
                         # Filter tweets related to election, pru, and pilihanraya
