@@ -27,7 +27,7 @@ from PIL import Image
 from tqdm import tqdm
 from wordcloud import WordCloud
 from sklearn.svm import SVC
-
+from sklearn.model_selection import GridSearchCV
 
 im = Image.open("image/carat.ico")
 st.set_page_config(page_title="FeelTech",page_icon=im,layout="wide")
@@ -304,6 +304,8 @@ def visualize(df):
                             df['neutral_percentage'] = neutral_percentages
 
                             vectorizer = TfidfVectorizer(max_features=500000)
+                            # Define the parameter grid to search
+                            param_grid = {'alpha': [0.1, 0.5, 1.0, 2.0, 5.0, 10.0]}
 
                             # Convert the list of arrays to a 2D NumPy array
                             X = vectorizer.fit_transform(df['tweets'].apply(lambda x: ' '.join(x)))
@@ -348,7 +350,19 @@ def visualize(df):
                             st.subheader("Evaluation for Naive Bayes Model:")
                             model_Evaluate(BNBmodel)
                             y_pred_original = BNBmodel.predict(X_test)
-
+                                 
+                            # Instantiate the GridSearchCV object
+                            grid_search = GridSearchCV(BNBmodel, param_grid, cv=5, scoring='accuracy')
+                            # Get the best hyperparameters
+                            best_alpha = grid_search.best_params_['alpha']
+                           
+                            # Train the model with the best hyperparameters
+                            best_model = BernoulliNB(alpha=best_alpha)
+                            best_model.fit(X_train, y_train)
+                           
+                            # Make predictions on the test set
+                            y_pred = best_model.predict(X_test)
+                         
                             # Create an SVM classifier
                             SVMmodel = SVC()
                             SVMmodel.fit(X_train, y_train)
