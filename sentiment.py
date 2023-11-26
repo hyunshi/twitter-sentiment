@@ -248,10 +248,10 @@ def Home():
                         st.write("Neutral Percentage: {:.2f}%".format(neutral_percentage))
                         st.progress(neutral_percentage / 100)
                         st.dataframe(df, use_container_width=True)
-                        return df
+                        return df, corpus
                         
                         
-def visualize(df):
+def visualize(df, corpus):
                         # Filter tweets related to election, pru, and pilihanraya
                         election_keywords = ['general', 'pru15', 'malaysia']
                         election_related_tweets = df[df['tweets'].apply(lambda x: any(keyword in x for keyword in election_keywords))]
@@ -379,6 +379,6 @@ def sideBar():
  if selected=="Visualization":
     df = Home()
     #st.subheader(f"Page: {selected}")
-    visualize(df)
+    visualize(df, corpus)
 
 sideBar()
