@@ -303,7 +303,7 @@ def visualize(df):
                             df['negative_percentage'] = negative_percentages
                             df['neutral_percentage'] = neutral_percentages
 
-                            vectorizer = TfidfVectorizer(max_features=500000)
+                            vectorizer = TfidfVectorizer(max_features=5000)
 
                             # Join the lists of tokens into strings
                             df['tweets_str'] = df['tweets'].apply(lambda x: ' '.join(x))
