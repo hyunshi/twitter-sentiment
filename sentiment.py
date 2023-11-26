@@ -317,7 +317,7 @@ def visualize(df):
                             y = y.map({'positive': 0, 'negative': 1, 'neutral': 2})
 
                             # Split the data into training and testing sets
-                            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=42)
+                            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
                             # Apply oversampling using SMOTE
                             oversampler = SMOTE(random_state=42)
