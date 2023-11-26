@@ -26,7 +26,7 @@ from sklearn.naive_bayes import MultinomialNB, BernoulliNB
 from PIL import Image
 from tqdm import tqdm
 from wordcloud import WordCloud
-
+from imblearn.over_sampling import SMOTE
 
 
 im = Image.open("image/carat.ico")
@@ -318,7 +318,10 @@ def visualize(df):
 
                             # Split the data into training and testing sets
                             X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=42)
-                                 
+
+                            # Apply oversampling using SMOTE
+                            oversampler = SMOTE(random_state=42)
+                            X_train_resampled, y_train_resampled = oversampler.fit_resample(X_train, y_train)
                             def model_Evaluate(model):
                                 # Predict values for Test dataset
                                 y_pred = model.predict(X_test)
@@ -348,7 +351,7 @@ def visualize(df):
 
                             # Create a Multinomial Naive Bayes classifier
                             BNBmodel = BernoulliNB()
-                            BNBmodel.fit(X_train, y_train)
+                            BNBmodel.fit(X_train_resampled, y_train_resampled)
                             model_Evaluate(BNBmodel)
                             y_pred1 = BNBmodel.predict(X_test)
 def sideBar():
