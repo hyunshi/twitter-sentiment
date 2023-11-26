@@ -26,6 +26,8 @@ from sklearn.naive_bayes import MultinomialNB, BernoulliNB
 from PIL import Image
 from tqdm import tqdm
 from wordcloud import WordCloud
+from gensim.models import Word2Vec
+
 
 # Load the Word2Vec model
 word2vec_model = Word2Vec.load("models/word2vec_model.bin")
