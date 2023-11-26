@@ -171,8 +171,8 @@ def Home():
                         embeddings = [word2vec_model.wv[word] for word in tokens if word in word2vec_model.wv]
                         return np.mean(embeddings, axis=0) if embeddings else np.zeros(word2vec_model.vector_size)
                            
-                            # Apply the word embeddings to your DataFrame
-                            df['word_embeddings'] = df['tweets'].apply(get_word_embeddings)
+                    # Apply the word embeddings to your DataFrame
+                    df['word_embeddings'] = df['tweets'].apply(get_word_embeddings)
 
 
                     # Initialize sentiment counts
