@@ -315,10 +315,6 @@ def visualize(df):
                                         
                                      # Fit the GridSearchCV to the data
                                      grid_search.fit(X_train, y_train)
-                                        
-                                     # Display the best parameters and their corresponding accuracy
-                                     st.write("Best Parameters:", grid_search.best_params_)
-                                     st.write("Best Accuracy:", grid_search.best_score_)
                                     
                                      return grid_search.best_estimator_
                            
@@ -361,15 +357,9 @@ def visualize(df):
                                 plt.title("Confusion Matrix", fontdict={'size':18}, pad=20)
                                 st.pyplot(plt)
                                  
-                            # Create a Multinomial Naive Bayes classifier
-                            BNBmodel = BernoulliNB()
-                            BNBmodel.fit(X_train, y_train)
-                            st.subheader("Evaluation for Naive Bayes Model:")
-                            model_Evaluate(BNBmodel)
-                            y_pred_original = BNBmodel.predict(X_test)
-
+                            # Create a Best Bernoulli Naive Bayes classifier
                             best_bnb_model = tune_hyperparameters_bnb(X_train, y_train)
-                            st.subheader("Evaluation for Best Bernoulli Naive Bayes Model:")
+                            st.subheader("Evaluation for Bernoulli Naive Bayes Model:")
                             model_Evaluate(best_bnb_model)
                             y_pred_original = best_bnb_model.predict(X_test)
                                  
