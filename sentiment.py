@@ -348,14 +348,12 @@ def visualize(df):
                             st.subheader("Evaluation for Naive Bayes Model:")
                             model_Evaluate(BNBmodel)
                             y_pred_original = BNBmodel.predict(X_test)
-                                 
-                            # Define the parameter grid to search
-                            param_grid = {'alpha': [0.1, 0.5, 1.0, 2.0, 5.0, 10.0]}    
+                                   
                             # Instantiate the GridSearchCV object
                             grid_search = GridSearchCV(BNBmodel, param_grid, cv=5, scoring='accuracy')
                             
                             # Get the best hyperparameters
-                            best_alpha = grid_search.best_params_['alpha']
+                            best_alpha = grid_search.best_params_.get('alpha', 1.0)
                            
                             # Train the model with the best hyperparameters
                             best_model = BernoulliNB(alpha=best_alpha)
