@@ -304,23 +304,23 @@ def visualize(df):
                             df['neutral_percentage'] = neutral_percentages
 
                             def tune_hyperparameters_bnb(X_train, y_train):
-                            # Define the parameter grid for Bernoulli Naive Bayes
-                            param_grid = {'alpha': [0.1, 0.5, 1.0, 1.5, 2.0]}
-                               
-                            # Create the Bernoulli Naive Bayes classifier
-                            bnb_model = BernoulliNB()
-                               
-                            # Instantiate the GridSearchCV object
-                            grid_search = GridSearchCV(estimator=bnb_model, param_grid=param_grid, scoring='accuracy', cv=5)
-                               
-                            # Fit the GridSearchCV to the data
-                            grid_search.fit(X_train, y_train)
-                               
-                            # Display the best parameters and their corresponding accuracy
-                            st.write("Best Parameters:", grid_search.best_params_)
-                            st.write("Best Accuracy:", grid_search.best_score_)
-                           
-                            return grid_search.best_estimator_
+                                     # Define the parameter grid for Bernoulli Naive Bayes
+                                     param_grid = {'alpha': [0.1, 0.5, 1.0, 1.5, 2.0]}
+                                        
+                                     # Create the Bernoulli Naive Bayes classifier
+                                     bnb_model = BernoulliNB()
+                                        
+                                     # Instantiate the GridSearchCV object
+                                     grid_search = GridSearchCV(estimator=bnb_model, param_grid=param_grid, scoring='accuracy', cv=5)
+                                        
+                                     # Fit the GridSearchCV to the data
+                                     grid_search.fit(X_train, y_train)
+                                        
+                                     # Display the best parameters and their corresponding accuracy
+                                     st.write("Best Parameters:", grid_search.best_params_)
+                                     st.write("Best Accuracy:", grid_search.best_score_)
+                                    
+                                     return grid_search.best_estimator_
                            
                             vectorizer = TfidfVectorizer(max_features=500000)
 
