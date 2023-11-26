@@ -254,19 +254,18 @@ def visualize(df):
 
                             # WordCloud for Positive Sentiment related to election
                             st.write("WordCloud for Positive Sentiment Related to Election:")
-                            wordcloud_positive_election = WordCloud(width=800, height=400, background_color='black').generate(positive_tweets_election)
-                            plt.figure(figsize=(10, 5))
-                            plt.imshow(wordcloud_positive_election, interpolation='bilinear')
-                            plt.axis('off')
-                            st.pyplot(plt)
-
+                            wordcloud_positive_election = WordCloud(width=400, height=400, background_color='black').generate(positive_tweets_election)
+                            col1, col2 = st.columns(2)
+                            col1.pyplot(plt.figure(figsize=(8, 8)))
+                            col1.pyplot(plt.imshow(wordcloud_positive_election, interpolation='bilinear'))
+                            col1.pyplot(plt.axis('off'))
+                  
                             # WordCloud for Negative Sentiment related to election
                             st.write("WordCloud for Negative Sentiment Related to Election:")
-                            wordcloud_negative_election = WordCloud(width=800, height=400, background_color='black').generate(negative_tweets_election)
-                            plt.figure(figsize=(10, 5))
-                            plt.imshow(wordcloud_negative_election, interpolation='bilinear')
-                            plt.axis('off')
-                            st.pyplot(plt)
+                            wordcloud_negative_election = WordCloud(width=400, height=400, background_color='black').generate(negative_tweets_election)
+                            col2.pyplot(plt.figure(figsize=(8, 8)))
+                            col2.pyplot(plt.imshow(wordcloud_negative_election, interpolation='bilinear'))
+                            col2.pyplot(plt.axis('off'))
                             
                             # Create empty lists to store percentages for each text
                             positive_percentages = []
