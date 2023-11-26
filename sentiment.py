@@ -306,8 +306,11 @@ def visualize(df):
 
                             vectorizer = TfidfVectorizer(max_features=500000)
                             
+                            # Fit the vectorizer on the training data
+                            X_vectorized = vectorizer.fit_transform(df['tweets'])
+                           
                             # Separate features (X) and target variable (y)
-                            X = vectorizer.transform(df['tweets'])
+                            X = X_vectorized
                             y = df['sentiment']
 
                             # Convert sentiment labels to numerical values
