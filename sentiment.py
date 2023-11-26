@@ -236,7 +236,7 @@ def Home():
                         st.progress(neutral_percentage / 100)
                         st.dataframe(df, use_container_width=True)
                         
-def visualize(df):
+                       def visualize(df):
                         # Filter tweets related to election, pru, and pilihanraya
                         election_keywords = ['general', 'pru15', 'malaysia']
                         election_related_tweets = df[df['tweets'].apply(lambda x: any(keyword in x for keyword in election_keywords))]
