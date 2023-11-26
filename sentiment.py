@@ -305,9 +305,9 @@ def visualize(df):
                             df['neutral_percentage'] = neutral_percentages
 
                             vectorizer = TfidfVectorizer(max_features=500000)
-                           
+                            
                             # Separate features (X) and target variable (y)
-                            X = df['tweets'].vectorizer.fit_transform(df['tweets'])
+                            X = vectorizer.transform(df['tweets'])
                             y = df['sentiment']
 
                             # Convert sentiment labels to numerical values
