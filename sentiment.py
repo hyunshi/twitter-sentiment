@@ -239,7 +239,7 @@ def Home():
                         
                         
 def visualize(df):
-                        if st.button("Visualize"):
+         if st.button('visualize'):
                                  # Filter tweets related to election, pru, and pilihanraya
                                  election_keywords = ['general', 'pru15', 'malaysia']
                                  election_related_tweets = df[df['tweets'].apply(lambda x: any(keyword in x for keyword in election_keywords))]
