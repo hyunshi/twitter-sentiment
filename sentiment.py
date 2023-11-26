@@ -236,7 +236,7 @@ def Home():
                         st.progress(neutral_percentage / 100)
                         st.dataframe(df, use_container_width=True)
                         return df
-                             if st.button("Visualize"):
+                        if st.button("Visualize"):
                                visualize(df)
                         
 def visualize(df):
