@@ -10,3 +10,4 @@ streamlit-option-menu
 tqdm
 wordcloud
 textblob
+matplolib
