@@ -347,4 +347,16 @@ def Home():
                             BNBmodel.fit(X_train, y_train)
                             model_Evaluate(BNBmodel)
                             y_pred1 = BNBmodel.predict(X_test)
-Home()
+def sideBar():
+ with st.sidebar:
+    selected=option_menu(
+        menu_title="Main Menu",
+        options=["Home","Visualization"],
+        icons=["house","eye"],
+        menu_icon="cast",
+        default_index=0
+    )
+ if selected=="Home":
+    #st.subheader(f"Page: {selected}")
+    Home()
+
