@@ -303,6 +303,25 @@ def visualize(df):
                             df['negative_percentage'] = negative_percentages
                             df['neutral_percentage'] = neutral_percentages
 
+                            def tune_hyperparameters_bnb(X_train, y_train):
+                            # Define the parameter grid for Bernoulli Naive Bayes
+                            param_grid = {'alpha': [0.1, 0.5, 1.0, 1.5, 2.0]}
+                               
+                            # Create the Bernoulli Naive Bayes classifier
+                            bnb_model = BernoulliNB()
+                               
+                            # Instantiate the GridSearchCV object
+                            grid_search = GridSearchCV(estimator=bnb_model, param_grid=param_grid, scoring='accuracy', cv=5)
+                               
+                            # Fit the GridSearchCV to the data
+                            grid_search.fit(X_train, y_train)
+                               
+                            # Display the best parameters and their corresponding accuracy
+                            st.write("Best Parameters:", grid_search.best_params_)
+                            st.write("Best Accuracy:", grid_search.best_score_)
+                           
+                            return grid_search.best_estimator_
+                           
                             vectorizer = TfidfVectorizer(max_features=500000)
 
                             # Convert the list of arrays to a 2D NumPy array
@@ -341,14 +360,19 @@ def visualize(df):
                                 plt.ylabel("Actual values", fontdict={'size':14}, labelpad=10)
                                 plt.title("Confusion Matrix", fontdict={'size':18}, pad=20)
                                 st.pyplot(plt)
-
+                                 
                             # Create a Multinomial Naive Bayes classifier
                             BNBmodel = BernoulliNB()
                             BNBmodel.fit(X_train, y_train)
                             st.subheader("Evaluation for Naive Bayes Model:")
                             model_Evaluate(BNBmodel)
                             y_pred_original = BNBmodel.predict(X_test)
-                         
+
+                            best_bnb_model = tune_hyperparameters_bnb(X_train, y_train)
+                            st.subheader("Evaluation for Best Bernoulli Naive Bayes Model:")
+                            model_Evaluate(best_bnb_model)
+                            y_pred_original = best_bnb_model.predict(X_test)
+                                 
                             # Create an SVM classifier
                             SVMmodel = SVC()
                             SVMmodel.fit(X_train, y_train)
