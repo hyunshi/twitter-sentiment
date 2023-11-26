@@ -306,13 +306,13 @@ def visualize(df):
 
                             vectorizer = TfidfVectorizer(max_features=500000)
                             
-                            # Fit the vectorizer on the training data
-                            X_vectorized = vectorizer.fit_transform(df['tweets'])
-                           
-                            # Separate features (X) and target variable (y)
-                            X = X_vectorized
-                            y = df['sentiment']
+                           # Join the lists of tokens into strings
+                            df['tweets_str'] = df['tweets'].apply(lambda x: ' '.join(x))
 
+                            # Vectorize the text data
+                            X = vectorizer.fit_transform(df['tweets_str'])
+                            y = df['sentiment']
+                                 
                             # Convert sentiment labels to numerical values
                             y_numerical = y.map({'positive': 0, 'negative': 1, 'neutral': 2})
 
