@@ -1,7 +1,7 @@
 cleantext
 gensim
 seaborn
-nltk.corpus
+nltk
 scikit-learn
 streamlit-option-menu
 tqdm
