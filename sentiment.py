@@ -236,6 +236,7 @@ def Home():
                         st.progress(neutral_percentage / 100)
                         st.dataframe(df, use_container_width=True)
                         
+def visualize(df):
                         # Filter tweets related to election, pru, and pilihanraya
                         election_keywords = ['general', 'pru15', 'malaysia']
                         election_related_tweets = df[df['tweets'].apply(lambda x: any(keyword in x for keyword in election_keywords))]
@@ -359,5 +360,8 @@ def sideBar():
  if selected=="Home":
     #st.subheader(f"Page: {selected}")
     Home()
+ if selected=="Visualization":
+    #st.subheader(f"Page: {selected}")
+    visualize()
 
 sideBar()
