@@ -361,6 +361,9 @@ def sideBar():
  if selected=="Home":
     #st.subheader(f"Page: {selected}")
     df = Home()
+    if st.button("Visualize"):
+             visualize(df)
+             
  if selected=="Visualization":
     
     #st.subheader(f"Page: {selected}")
