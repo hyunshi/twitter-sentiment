@@ -1,0 +1,11 @@
+streamlit
+pandas
+cleantext
+numpy
+gensim
+seaborn
+nltk.corpus
+scikit-learn
+streamlit-option-menu
+tqdm
+wordcloud
