@@ -306,7 +306,7 @@ def visualize(df):
                             vectorizer = TfidfVectorizer(max_features=500000)
 
                             # Convert the list of arrays to a 2D NumPy array
-                            X = vectorizer.fit_transform(df['tweets'])
+                            X = vectorizer.fit_transform(df['tweets'].apply(lambda x: ' '.join(x)))
                             y = df['sentiment']
                                  
                             # Convert sentiment labels to numerical values
