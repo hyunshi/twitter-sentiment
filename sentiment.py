@@ -306,21 +306,26 @@ def visualize(df):
 
                             vectorizer = TfidfVectorizer(max_features=500000)
 
-                            # Join the lists of tokens into strings
-                            df['tweets_str'] = df['tweets'].apply(lambda x: ' '.join(x))
-
+                            # Assuming 'sentiment' is your target column
+                            target_column = 'sentiment'
+                           
+                            # Separate features (X) and target variable (y)
+                            X = df['tweets'].apply(lambda x: ' '.join(x))
+                            y = df[target_column]
+                            
                             # Vectorize the text data
-                            X = vectorizer.fit_transform(df['tweets_str'])
-                            y = df['sentiment']
+                            vectorizer = TfidfVectorizer(max_features=500000)
+                            X_vectorized = vectorizer.fit_transform(X)
+
 
                             # Convert sentiment labels to numerical values
-                            y = y.map({'positive': 0, 'negative': 1, 'neutral': 2})
+                            y_numerical = y.map({'positive': 0, 'negative': 1, 'neutral': 2})
 
                             # Split the data into training and testing sets
-                            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+                            X_train, X_test, y_train, y_test = train_test_split(X_vectorized, y_numerical, test_size=0.2, random_state=42)
 
                             # Apply oversampling using SMOTE
-                            oversampler = SMOTE(random_state=42)
+                            oversampler = RandomOverSampler(random_state=42)
                             X_train_resampled, y_train_resampled = oversampler.fit_resample(X_train, y_train)
                             def model_Evaluate(model):
                                 # Predict values for Test dataset
@@ -353,7 +358,7 @@ def visualize(df):
                             BNBmodel = BernoulliNB()
                             BNBmodel.fit(X_train_resampled, y_train_resampled)
                             model_Evaluate(BNBmodel)
-                            y_pred1 = BNBmodel.predict(X_test)
+                            y_pred_original = BNBmodel.predict(X_test)
 def sideBar():
  with st.sidebar:
     selected=option_menu(
