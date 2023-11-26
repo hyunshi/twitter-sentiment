@@ -353,6 +353,7 @@ def visualize(df):
                             param_grid = {'alpha': [0.1, 0.5, 1.0, 2.0, 5.0, 10.0]}    
                             # Instantiate the GridSearchCV object
                             grid_search = GridSearchCV(BNBmodel, param_grid, cv=5, scoring='accuracy')
+                            
                             # Get the best hyperparameters
                             best_alpha = grid_search.best_params_['alpha']
                            
