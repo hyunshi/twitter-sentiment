@@ -362,7 +362,7 @@ def sideBar():
     #st.subheader(f"Page: {selected}")
     df = Home()
  if selected=="Visualization":
-    df = Home()
+    
     #st.subheader(f"Page: {selected}")
     visualize(df)
 
