@@ -347,8 +347,4 @@ def Home():
                             BNBmodel.fit(X_train, y_train)
                             model_Evaluate(BNBmodel)
                             y_pred1 = BNBmodel.predict(X_test)
-                                
-                            
-
-                         
-  
+Home()
