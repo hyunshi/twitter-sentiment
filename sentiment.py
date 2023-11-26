@@ -239,118 +239,117 @@ def Home():
                         
                         
 def visualize(df):
-         if st.button('visualize'):
-                                 # Filter tweets related to election, pru, and pilihanraya
-                                 election_keywords = ['general', 'pru15', 'malaysia']
-                                 election_related_tweets = df[df['tweets'].apply(lambda x: any(keyword in x for keyword in election_keywords))]
-         
-                                 # Check if there are positive and negative tweets related to election
-                                 positive_tweets_election = election_related_tweets[election_related_tweets['sentiment'] == 'positive']['tweets']
-                                 negative_tweets_election = election_related_tweets[election_related_tweets['sentiment'] == 'negative']['tweets']
-         
-                                 if not positive_tweets_election.empty and not negative_tweets_election.empty:
-                                     # Generate WordClouds for positive and negative sentiments
-                                     positive_tweets_election = ' '.join(positive_tweets_election.apply(lambda x: ' '.join(x)))
-                                     negative_tweets_election = ' '.join(negative_tweets_election.apply(lambda x: ' '.join(x)))
-         
-                                     # WordCloud for Positive Sentiment related to election
-                                     st.write("WordCloud for Positive Sentiment Related to Election:")
-                                     wordcloud_positive_election = WordCloud(width=800, height=400, background_color='black').generate(positive_tweets_election)
-                                     plt.figure(figsize=(10, 5))
-                                     plt.imshow(wordcloud_positive_election, interpolation='bilinear')
-                                     plt.axis('off')
-                                     st.pyplot(plt)
-         
-                                     # WordCloud for Negative Sentiment related to election
-                                     st.write("WordCloud for Negative Sentiment Related to Election:")
-                                     wordcloud_negative_election = WordCloud(width=800, height=400, background_color='black').generate(negative_tweets_election)
-                                     plt.figure(figsize=(10, 5))
-                                     plt.imshow(wordcloud_negative_election, interpolation='bilinear')
-                                     plt.axis('off')
-                                     st.pyplot(plt)
-                                     
-                                     # Create empty lists to store percentages for each text
-                                     positive_percentages = []
-                                     negative_percentages = []
-                                     neutral_percentages = []
-                                     
-                                     # Loop through each text and calculate the sentiment
-                                     for tokens in df['tweets']:
-                                         # Join the list of tokens into a single string
-                                         text = ' '.join(tokens)
-                                         
-                                         # Create a TextBlob object
-                                         analysis = TextBlob(text)
-                                         
-                                         # Get the sentiment score
-                                         sentiment_score = analysis.sentiment.polarity
-                                         
-                                         if sentiment_score > 0:
-                                             positive_percentages.append(sentiment_score * 100)
-                                             negative_percentages.append(0)
-                                             neutral_percentages.append(0)
-                                         elif sentiment_score < 0:
-                                             positive_percentages.append(0)
-                                             negative_percentages.append(-sentiment_score * 100)
-                                             neutral_percentages.append(0)
-                                         else:
-                                             positive_percentages.append(0)
-                                             negative_percentages.append(0)
-                                             neutral_percentages.append(0)
-         
-                                     # Add the percentages as new columns in the DataFrame
-                                     df['positive_percentage'] = positive_percentages
-                                     df['negative_percentage'] = negative_percentages
-                                     df['neutral_percentage'] = neutral_percentages
-         
-                                     vectorizer = TfidfVectorizer(max_features=500000)
-         
-                                     # Join the lists of tokens into strings
-                                     df['tweets_str'] = df['tweets'].apply(lambda x: ' '.join(x))
-         
-                                     # Vectorize the text data
-                                     X = vectorizer.fit_transform(df['tweets_str'])
-                                     y = df['sentiment']
-         
-                                     # Convert sentiment labels to numerical values
-                                     y = y.map({'positive': 0, 'negative': 1, 'neutral': 2})
-         
-                                     # Split the data into training and testing sets
-                                     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-         
-                                         
-                                     def model_Evaluate(model):
-                                         # Predict values for Test dataset
-                                         y_pred = model.predict(X_test)
-         
-                                         # Print the evaluation metrics for the dataset.
-                                         classification_rep = classification_report(y_test, y_pred)
-                                         st.write("Classification Report:")
-                                         st.text(classification_rep)
-         
-                                         # Compute and plot the Confusion matrix
-                                         cf_matrix = confusion_matrix(y_test, y_pred)
-                                         categories = ['Positive', 'Negative', 'Neutral']
-                                         group_percentages = ['{0:.2%}'.format(value) for value in cf_matrix.flatten() / np.sum(cf_matrix)]
-                                         group_names = ['TPpos', 'Eneg', 'Eneu', 'Epos', 'TPneg', 'Eneu', 'Epos', 'Eneg', 'TPneu']
-                                         labels = [f'{v1}\n{v2}' for v1, v2 in zip(group_names, group_percentages)]
-                                         labels = np.asarray(labels).reshape(3, 3)
-                                         
-                                         # Display the Confusion Matrix
-                                         st.write("Confusion Matrix:")
-                                         plt.figure(figsize=(8, 6))
-                                         sns.heatmap(cf_matrix, annot=labels, fmt='', cmap="Blues", cbar=False,
-                                                     xticklabels=categories, yticklabels=categories)
-                                         plt.xlabel("Predicted values", fontdict={'size':14}, labelpad=10)
-                                         plt.ylabel("Actual values", fontdict={'size':14}, labelpad=10)
-                                         plt.title("Confusion Matrix", fontdict={'size':18}, pad=20)
-                                         st.pyplot(plt)
-         
-                                     # Create a Multinomial Naive Bayes classifier
-                                     BNBmodel = BernoulliNB()
-                                     BNBmodel.fit(X_train, y_train)
-                                     model_Evaluate(BNBmodel)
-                                     y_pred1 = BNBmodel.predict(X_test)
+                        # Filter tweets related to election, pru, and pilihanraya
+                        election_keywords = ['general', 'pru15', 'malaysia']
+                        election_related_tweets = df[df['tweets'].apply(lambda x: any(keyword in x for keyword in election_keywords))]
+
+                        # Check if there are positive and negative tweets related to election
+                        positive_tweets_election = election_related_tweets[election_related_tweets['sentiment'] == 'positive']['tweets']
+                        negative_tweets_election = election_related_tweets[election_related_tweets['sentiment'] == 'negative']['tweets']
+
+                        if not positive_tweets_election.empty and not negative_tweets_election.empty:
+                            # Generate WordClouds for positive and negative sentiments
+                            positive_tweets_election = ' '.join(positive_tweets_election.apply(lambda x: ' '.join(x)))
+                            negative_tweets_election = ' '.join(negative_tweets_election.apply(lambda x: ' '.join(x)))
+
+                            # WordCloud for Positive Sentiment related to election
+                            st.write("WordCloud for Positive Sentiment Related to Election:")
+                            wordcloud_positive_election = WordCloud(width=800, height=400, background_color='black').generate(positive_tweets_election)
+                            plt.figure(figsize=(10, 5))
+                            plt.imshow(wordcloud_positive_election, interpolation='bilinear')
+                            plt.axis('off')
+                            st.pyplot(plt)
+
+                            # WordCloud for Negative Sentiment related to election
+                            st.write("WordCloud for Negative Sentiment Related to Election:")
+                            wordcloud_negative_election = WordCloud(width=800, height=400, background_color='black').generate(negative_tweets_election)
+                            plt.figure(figsize=(10, 5))
+                            plt.imshow(wordcloud_negative_election, interpolation='bilinear')
+                            plt.axis('off')
+                            st.pyplot(plt)
+                            
+                            # Create empty lists to store percentages for each text
+                            positive_percentages = []
+                            negative_percentages = []
+                            neutral_percentages = []
+                            
+                            # Loop through each text and calculate the sentiment
+                            for tokens in df['tweets']:
+                                # Join the list of tokens into a single string
+                                text = ' '.join(tokens)
+                                
+                                # Create a TextBlob object
+                                analysis = TextBlob(text)
+                                
+                                # Get the sentiment score
+                                sentiment_score = analysis.sentiment.polarity
+                                
+                                if sentiment_score > 0:
+                                    positive_percentages.append(sentiment_score * 100)
+                                    negative_percentages.append(0)
+                                    neutral_percentages.append(0)
+                                elif sentiment_score < 0:
+                                    positive_percentages.append(0)
+                                    negative_percentages.append(-sentiment_score * 100)
+                                    neutral_percentages.append(0)
+                                else:
+                                    positive_percentages.append(0)
+                                    negative_percentages.append(0)
+                                    neutral_percentages.append(0)
+
+                            # Add the percentages as new columns in the DataFrame
+                            df['positive_percentage'] = positive_percentages
+                            df['negative_percentage'] = negative_percentages
+                            df['neutral_percentage'] = neutral_percentages
+
+                            vectorizer = TfidfVectorizer(max_features=500000)
+
+                            # Join the lists of tokens into strings
+                            df['tweets_str'] = df['tweets'].apply(lambda x: ' '.join(x))
+
+                            # Vectorize the text data
+                            X = vectorizer.fit_transform(df['tweets_str'])
+                            y = df['sentiment']
+
+                            # Convert sentiment labels to numerical values
+                            y = y.map({'positive': 0, 'negative': 1, 'neutral': 2})
+
+                            # Split the data into training and testing sets
+                            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+                                
+                            def model_Evaluate(model):
+                                # Predict values for Test dataset
+                                y_pred = model.predict(X_test)
+
+                                # Print the evaluation metrics for the dataset.
+                                classification_rep = classification_report(y_test, y_pred)
+                                st.write("Classification Report:")
+                                st.text(classification_rep)
+
+                                # Compute and plot the Confusion matrix
+                                cf_matrix = confusion_matrix(y_test, y_pred)
+                                categories = ['Positive', 'Negative', 'Neutral']
+                                group_percentages = ['{0:.2%}'.format(value) for value in cf_matrix.flatten() / np.sum(cf_matrix)]
+                                group_names = ['TPpos', 'Eneg', 'Eneu', 'Epos', 'TPneg', 'Eneu', 'Epos', 'Eneg', 'TPneu']
+                                labels = [f'{v1}\n{v2}' for v1, v2 in zip(group_names, group_percentages)]
+                                labels = np.asarray(labels).reshape(3, 3)
+                                
+                                # Display the Confusion Matrix
+                                st.write("Confusion Matrix:")
+                                plt.figure(figsize=(8, 6))
+                                sns.heatmap(cf_matrix, annot=labels, fmt='', cmap="Blues", cbar=False,
+                                            xticklabels=categories, yticklabels=categories)
+                                plt.xlabel("Predicted values", fontdict={'size':14}, labelpad=10)
+                                plt.ylabel("Actual values", fontdict={'size':14}, labelpad=10)
+                                plt.title("Confusion Matrix", fontdict={'size':18}, pad=20)
+                                st.pyplot(plt)
+
+                            # Create a Multinomial Naive Bayes classifier
+                            BNBmodel = BernoulliNB()
+                            BNBmodel.fit(X_train, y_train)
+                            model_Evaluate(BNBmodel)
+                            y_pred1 = BNBmodel.predict(X_test)
 def sideBar():
  with st.sidebar:
     selected=option_menu(
