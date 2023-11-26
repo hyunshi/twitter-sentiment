@@ -28,13 +28,13 @@ from tqdm import tqdm
 from wordcloud import WordCloud
 
 
-im = Image.open(r"C:\Users\Administrator\Documents\UiTM\D3\S6\CSP\image\carat.ico")
+im = Image.open("https://github.com/hyunshi/twitter-sentiment/blob/main/image/carat.ico")
 st.set_page_config(page_title="FeelTech",page_icon=im,layout="wide")
 st.header('Twitter Sentiment Analysis')
 st.markdown("##")
 
 #side bar
-st.sidebar.image(r"C:\Users\Administrator\Documents\UiTM\D3\S6\CSP\image\carat.jpg",caption="Developed and Maintaned by: Hidayah Athira")
+st.sidebar.image("https://github.com/hyunshi/twitter-sentiment/blob/main/image/sev.jpg",caption="Developed and Maintaned by: Hidayah Athira")
          
 #switcher
 st.sidebar.header("Twitter Analysis")
