@@ -9,3 +9,4 @@ scikit-learn
 streamlit-option-menu
 tqdm
 wordcloud
+textblob
