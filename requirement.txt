@@ -1,7 +1,5 @@
 streamlit
-pandas
 cleantext
-numpy
 gensim
 seaborn
 nltk.corpus
