@@ -26,7 +26,7 @@ from sklearn.naive_bayes import MultinomialNB, BernoulliNB
 from PIL import Image
 from tqdm import tqdm
 from wordcloud import WordCloud
-
+from sklearn.svm import SVC
 
 
 im = Image.open("image/carat.ico")
@@ -345,8 +345,17 @@ def visualize(df):
                             # Create a Multinomial Naive Bayes classifier
                             BNBmodel = BernoulliNB()
                             BNBmodel.fit(X_train, y_train)
+                            st.subheader("Evaluation for Naive Bayes Model:")
                             model_Evaluate(BNBmodel)
                             y_pred_original = BNBmodel.predict(X_test)
+
+                            # Create an SVM classifier
+                            SVMmodel = SVC()
+                            SVMmodel.fit(X_train, y_train)
+                            st.subheader("Evaluation for SVM Model:")
+                            model_Evaluate(SVMmodel)
+                            y_pred_original = SVMmodel.predict(X_test)
+
 def sideBar():
  with st.sidebar:
     selected=option_menu(
