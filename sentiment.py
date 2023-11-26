@@ -263,7 +263,7 @@ def visualize(df):
                               st.image(image_positive, caption='Positive Sentiment WordCloud', use_column_width=True)
                   
                            # WordCloud for Negative Sentiment related to election
-                           with col2:
+                            with col2:
                               st.write("WordCloud for Negative Sentiment Related to Election:")
                               wordcloud_negative_election = WordCloud(width=400, height=400, background_color='black').generate(negative_tweets_election)
                               image_negative = wordcloud_negative_election.to_image()
