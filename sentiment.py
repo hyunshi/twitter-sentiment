@@ -28,6 +28,7 @@ from tqdm import tqdm
 from wordcloud import WordCloud
 from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV
+from train_model import best_model, vectorizer
 
 im = Image.open("image/carat.ico")
 st.set_page_config(page_title="FeelTech",page_icon=im,layout="wide")
@@ -349,6 +350,8 @@ def visualize(df):
                             model_Evaluate(BNBmodel)
                             y_pred_original = BNBmodel.predict(X_test)
                                    
+                            # Define the parameter grid to search
+                            param_grid = {'alpha': [0.1, 0.5, 1.0, 2.0, 5.0, 10.0]}    
                             # Instantiate the GridSearchCV object
                             grid_search = GridSearchCV(BNBmodel, param_grid, cv=5, scoring='accuracy')
                             
