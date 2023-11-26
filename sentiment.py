@@ -55,7 +55,7 @@ def Home():
     with st.expander('Analyze CSV'):
         upl = st.file_uploader('Upload file')
         if upl:
-                df = pd.read_csv(upl)
+                df = pd.read_csv(upl, encoding='latin-1')
                 st.dataframe(df, use_container_width=True)
                 positive_percentage = 0  # Initialize the variables before the if block
                 negative_percentage = 0
