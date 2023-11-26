@@ -236,6 +236,8 @@ def Home():
                         st.progress(neutral_percentage / 100)
                         st.dataframe(df, use_container_width=True)
                         return df
+                             if st.button("Visualize"):
+                               visualize(df)
                         
 def visualize(df):
                         # Filter tweets related to election, pru, and pilihanraya
@@ -361,8 +363,6 @@ def sideBar():
  if selected=="Home":
     #st.subheader(f"Page: {selected}")
     df = Home()
-    if st.button("Visualize"):
-             visualize(df)
              
  if selected=="Visualization":
     
