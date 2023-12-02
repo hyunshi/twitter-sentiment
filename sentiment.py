@@ -162,6 +162,11 @@ def Home():
                     df['tweets'] = df['tweets'].apply(tokenize)
                     df['tweets'].head()
 
+                    df.drop_duplicates(subset='tweets', keep='first', inplace=True)
+
+                      # Display the count of unique rows after removing duplicates
+                    st.write(f"Number of unique tweets after removing duplicates: {len(df)}")
+
                     # Initialize sentiment counts
                     sentiment_counts = {"Positive": 0, "Negative": 0, "Neutral": 0}
 
