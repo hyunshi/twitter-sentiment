@@ -203,6 +203,23 @@ def Home():
                     # Apply the labeling function to your DataFrame
                     df['sentiment'] = df['tweets'].apply(lambda x: label_sentiment(x))
 
+                    def calculate_vader_sentiment(text):
+                      sid = SentimentIntensityAnalyzer()
+                      sentiment_scores = sid.polarity_scores(text)
+                  
+                      compound_score = sentiment_scores['compound']
+                  
+                      if compound_score >= 0.05:
+                          return 'positive', compound_score
+                      elif compound_score <= -0.05:
+                          return 'negative', compound_score
+                      else:
+                          return 'neutral', compound_score
+                               
+                    df['vader_sentiment_label'], df['vader_compound_score'] = zip(*df['tweets'].apply(calculate_vader_sentiment))
+
+
+
                     # Calculate percentages
                     if df is not None:
                         # Initialize sentiment counts
@@ -240,7 +257,11 @@ def Home():
                         positive_percentage = (sentiment_counts["Positive"] / total_tweets) * 100
                         negative_percentage = (sentiment_counts["Negative"] / total_tweets) * 100
                         neutral_percentage = (sentiment_counts["Neutral"] / total_tweets) * 100
-
+                           
+                        total_tweets = len(df)
+                        vader_positive_percentage = (df[df['vader_sentiment_label'] == 'positive'].shape[0] / total_tweets) * 100
+                        vader_negative_percentage = (df[df['vader_sentiment_label'] == 'negative'].shape[0] / total_tweets) * 100
+                        vader_neutral_percentage = (df[df['vader_sentiment_label'] == 'neutral'].shape[0] / total_tweets) * 100
                         st.write("Sentiment Analysis Results:")
                         
                         # Display individual progress bars for positive, negative, and neutral
@@ -252,6 +273,10 @@ def Home():
                         st.write("Neutral Percentage: {:.2f}%".format(neutral_percentage))
                         st.progress(neutral_percentage / 100)
                         st.dataframe(df, use_container_width=True)
+                        st.write("VADER Sentiment Analysis Results:")
+                        st.write("Positive Percentage: {:.2f}%".format(vader_positive_percentage))
+                        st.write("Negative Percentage: {:.2f}%".format(vader_negative_percentage))
+                        st.write("Neutral Percentage: {:.2f}%".format(vader_neutral_percentage))
                         return df
                         
                         
