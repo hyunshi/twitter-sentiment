@@ -193,7 +193,7 @@ def Home():
                         blob = TextBlob(text)
                         
                         # Get the sentiment score
-                        blob_sentiment_score = analysis.sentiment.polarity
+                        blob_sentiment_score = blob.sentiment.polarity
 
                         # Get the VADER sentiment label
                         vader_sentiment_score = sid.polarity_scores(text)['compound']
