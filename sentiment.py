@@ -16,6 +16,7 @@ from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet
 from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
+from nltk.sentiment import SentimentIntensityAnalyzer
 from gensim.utils import simple_preprocess
 from textblob import TextBlob
 from streamlit_option_menu import option_menu
@@ -170,6 +171,18 @@ def Home():
                     # Initialize sentiment counts
                     sentiment_counts = {"Positive": 0, "Negative": 0, "Neutral": 0}
 
+
+                    def label_sentiment_vader(text):
+                        sid = SentimentIntensityAnalyzer()
+                        sentiment_score = sid.polarity_scores(text)['compound']
+
+                        if sentiment_score >= 0.05:
+                          return "positive"
+                        elif sentiment_score <= -0.05:
+                          return "negative"
+                        else:
+                          return "neutral"
+
                     # Function to get sentiment label using TextBlob
                     def label_sentiment(tokens):
                         # Join the list of tokens into a single string
@@ -180,13 +193,17 @@ def Home():
                         
                         # Get the sentiment score
                         sentiment_score = analysis.sentiment.polarity
+
+                        # Get the VADER sentiment label
+                        vader_sentiment_label = label_sentiment_vader(text)
                         
-                        if sentiment_score > 0:
-                            return "positive"
-                        elif sentiment_score < 0:
-                            return "negative"
+                        # Choose the sentiment label based on the higher absolute sentiment score
+                        if abs(blob_sentiment_score) > abs(sid.polarity_scores(text)['compound']):
+                          sentiment_label = "positive" if blob_sentiment_score > 0 else "negative" if blob_sentiment_score < 0 else "neutral"
                         else:
-                            return "neutral"
+                          sentiment_label = vader_sentiment_label
+                  
+                        return sentiment_label
 
                     # Apply the labeling function to your DataFrame
                     df['sentiment'] = df['tweets'].apply(lambda x: label_sentiment(x))
