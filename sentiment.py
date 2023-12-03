@@ -186,25 +186,31 @@ def Home():
 
                     # Function to get sentiment label using TextBlob
                     def label_sentiment(tokens):
-                        # Join the list of tokens into a single string
-                        text = ' '.join(tokens)
-                        
-                        # Create a TextBlob object
-                        blob = TextBlob(text)
-                        
-                        # Get the sentiment score
-                        blob_sentiment_score = blob.sentiment.polarity
-
-                        # Get the VADER sentiment label
-                        vader_sentiment_score = sid.polarity_scores(text)['compound']
-                        
-                        # Choose the sentiment label based on the higher absolute sentiment score
-                        if abs(blob_sentiment_score) > abs(vader_sentiment_score):
-                          return "positive" if blob_sentiment_score > 0 else "negative"
-                        elif abs(blob_sentiment_score) < abs(vader_sentiment_score):
-                          return "positive" if vader_sentiment_score > 0 else "negative"
-                        else:
-                          return "neutral"
+                      # Join the list of tokens into a single string
+                      text = ' '.join(tokens)
+                  
+                      # Create a TextBlob object
+                      blob = TextBlob(text)
+                  
+                      # Get the sentiment score
+                      blob_sentiment_score = blob.sentiment.polarity
+                  
+                      # Get the VADER sentiment label
+                      sid = SentimentIntensityAnalyzer()
+                      vader_sentiment_score = sid.polarity_scores(text)['compound']
+                  
+                      # Choose the sentiment label based on the higher absolute sentiment score
+                      if abs(blob_sentiment_score) > abs(vader_sentiment_score):
+                          blob_sentiment_label = "positive" if blob_sentiment_score > 0 else "negative"
+                          vader_sentiment_label = "positive" if vader_sentiment_score > 0 else "negative"
+                      elif abs(blob_sentiment_score) < abs(vader_sentiment_score):
+                          blob_sentiment_label = "positive" if blob_sentiment_score > 0 else "negative"
+                          vader_sentiment_label = "positive" if vader_sentiment_score > 0 else "negative"
+                      else:
+                          blob_sentiment_label = "neutral"
+                          vader_sentiment_label = "neutral"
+                  
+                      return blob_sentiment_label, vader_sentiment_label
 
                     # Apply the labeling function to your DataFrame
                     df['sentiment'] = df['tweets'].apply(lambda x: label_sentiment(x))
