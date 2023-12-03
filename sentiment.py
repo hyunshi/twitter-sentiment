@@ -193,7 +193,7 @@ def Home():
                         analysis = TextBlob(text)
                         
                         # Get the sentiment score
-                        sentiment_score = analysis.sentiment.polarity
+                        blob_sentiment_score = analysis.sentiment.polarity
 
                         # Get the VADER sentiment label
                         vader_sentiment_label = label_sentiment_vader(text)
