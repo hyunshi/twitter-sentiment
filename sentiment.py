@@ -172,18 +172,6 @@ def Home():
                     # Initialize sentiment counts
                     sentiment_counts = {"Positive": 0, "Negative": 0, "Neutral": 0}
 
-
-                    def label_sentiment_vader(text):
-                        sid = SentimentIntensityAnalyzer()
-                        sentiment_score = sid.polarity_scores(text)['compound']
-
-                        if sentiment_score >= 0.05:
-                          return "positive"
-                        elif sentiment_score <= -0.05:
-                          return "negative"
-                        else:
-                          return "neutral"
-
                     # Function to get sentiment label using TextBlob
                     def label_sentiment(tokens):
                       # Join the list of tokens into a single string
