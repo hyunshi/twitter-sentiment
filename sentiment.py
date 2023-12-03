@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import string
 nltk.download('wordnet')
 nltk.download('stopwords')
+nltk.download('vader_lexicon')
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet
 from nltk.corpus import stopwords
