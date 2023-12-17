@@ -203,20 +203,26 @@ def Home():
                     # Apply the labeling function to your DataFrame
                     df['sentiment'] = df['tweets'].apply(lambda x: label_sentiment(x))
 
-                    def calculate_vader_sentiment(text):
-                      sid = SentimentIntensityAnalyzer()
-                      sentiment_scores = sid.polarity_scores(text)
+                    def calculate_vader_sentiment(tweet_list):
+                     sid = SentimentIntensityAnalyzer()
+                     sentiments = []
+
+                     for tweet in tweet_list:
+                          sentiment_scores = sid.polarity_scores(tweet)
+                          compound_score = sentiment_scores['compound']
                   
-                      compound_score = sentiment_scores['compound']
+                          if compound_score >= 0.05:
+                              sentiments.append('positive')
+                          elif compound_score <= -0.05:
+                              sentiments.append('negative')
+                          else:
+                              sentiments.append('neutral')
                   
-                      if compound_score >= 0.05:
-                          return 'positive', compound_score
-                      elif compound_score <= -0.05:
-                          return 'negative', compound_score
-                      else:
-                          return 'neutral', compound_score
-                               
-                    df['vader_sentiment_label'], df['vader_compound_score'] = zip(*df['tweets'].apply(calculate_vader_sentiment))
+                     return sentiments
+
+# Apply the modified function to the 'tweets' column
+df['vader_sentiment_label'] = calculate_vader_sentiment(df['tweets'])
+df['vader_compound_score'] = df['tweets'].apply(lambda x: sid.polarity_scores(' '.join(x))['compound'])
 
 
 
