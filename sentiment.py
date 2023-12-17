@@ -220,9 +220,9 @@ def Home():
                   
                      return sentiments
 
-                   # Apply the modified function to the 'tweets' column
-                   df['vader_sentiment_label'] = calculate_vader_sentiment(df['tweets'])
-                   df['vader_compound_score'] = df['tweets'].apply(lambda x: sid.polarity_scores(' '.join(x))['compound'])
+                    # Apply the modified function to the 'tweets' column
+                    df['vader_sentiment_label'] = calculate_vader_sentiment(df['tweets'])
+                    df['vader_compound_score'] = df['tweets'].apply(lambda x: sid.polarity_scores(' '.join(x))['compound'])
 
 
 
