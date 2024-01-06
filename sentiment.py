@@ -327,11 +327,6 @@ def visualize(df):
         # Split the data into training and testing sets
         X_train, X_test, y_train, y_test = train_test_split(X, y_numerical, test_size=0.2, random_state=42)
 
-        # Apply SMOTE for oversampling to handle imbalance
-        smote = SMOTE(sampling_strategy='auto', random_state=42)
-        X_train_resampled, y_train_resampled = smote.fit_resample(X_train.apply(lambda x: ' '.join(x)), y_train)
-        X_train_resampled_vectorized = vectorizer.fit_transform(X_train_resampled)
-
         def model_Evaluate(model):
             # Predict values for Test dataset
             y_pred = model.predict(X_test)
@@ -370,13 +365,6 @@ def visualize(df):
         st.subheader("Evaluation for Bernoulli Naive Bayes Model:")
         model_Evaluate(best_bnb_model)
         y_pred_original = best_bnb_model.predict(X_test)
-
-        # Example using Bernoulli Naive Bayes
-        bnb_model = BernoulliNB()
-        bnb_model.fit(X_train_resampled_vectorized, y_train_resampled)
-    
-        # Evaluate the model
-        model_Evaluate(bnb_model, X_test, y_test)
              
         # Create an SVM classifier
         SVMmodel = SVC()
