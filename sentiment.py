@@ -384,7 +384,7 @@ def visualize(df):
         SVMmodel = SVC()
         SVMmodel.fit(X_train, y_train)
         st.subheader("Evaluation for SVM Model:")
-        model_Evaluate(SVMmodel, X-test, y_test)
+        model_Evaluate(SVMmodel, X_test, y_test)
         y_pred_original = SVMmodel.predict(X_test)
 
 def sideBar():
