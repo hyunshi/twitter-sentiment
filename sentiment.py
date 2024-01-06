@@ -327,17 +327,16 @@ def visualize(df):
                             y_pred_original = SVMmodel.predict(X_test)
 
 def sideBar():
- with st.sidebar:
-    selected=option_menu(
-        menu_title="Main Menu",
-        options=["Home"],
-        icons=["house"],
-        menu_icon="cast",
-        default_index=0
-    )
- if selected=="Home":
-    #st.subheader(f"Page: {selected}")
-    df = Home()
-    visualize(df)
+    with st.sidebar:
+        selected = option_menu(
+            menu_title="Main Menu",
+            options=["Home"],
+            icons=["house"],
+            menu_icon="cast",
+            default_index=0
+        )
+    if selected == "Home":
+        visualize(df)  # Assuming df is defined globally
+
 
 sideBar()
