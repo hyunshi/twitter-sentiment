@@ -380,8 +380,6 @@ def sideBar():
             default_index=0
         )
     if selected == "Home":
-        upl = st.file_uploader('Upload file')
-        if upl:
             df = Home(upl)
             visualize(df)
 
