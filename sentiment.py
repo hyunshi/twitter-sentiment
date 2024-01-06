@@ -48,7 +48,9 @@ st.sidebar.image("image/carat.png", caption="Developed and Maintained by: Hidaya
 st.sidebar.header("Twitter Analysis")
 
 def Home():
-    # File upload section
+    # Add this line to download WordNet data
+    nltk.download('wordnet')
+
     upl = st.file_uploader('Upload file')
     if upl:
         df = pd.read_csv(upl, encoding='latin-1')
