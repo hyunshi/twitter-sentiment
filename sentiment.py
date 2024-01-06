@@ -368,6 +368,23 @@ def visualize(df):
             plt.ylabel("Actual values", fontdict={'size':14}, labelpad=10)
             plt.title("Confusion Matrix", fontdict={'size':18}, pad=20)
             st.pyplot(plt)
+
+            # Calculate ROC curve and AUC
+            fpr, tpr, _ = roc_curve(y_test, model.predict_proba(X_test)[:, 1])
+            roc_auc = auc(fpr, tpr)
+        
+            # Display ROC curve
+            st.write("ROC Curve:")
+            plt.figure(figsize=(8, 6))
+            plt.plot(fpr, tpr, color='darkorange', lw=2, label=f'ROC curve (area = {roc_auc:.2f})')
+            plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+            plt.xlim([0.0, 1.0])
+            plt.ylim([0.0, 1.05])
+            plt.xlabel('False Positive Rate')
+            plt.ylabel('True Positive Rate')
+            plt.title('Receiver Operating Characteristic (ROC) Curve')
+            plt.legend(loc="lower right")
+            st.pyplot(plt)
              
         # Create a Best Bernoulli Naive Bayes classifier
         best_bnb_model = tune_hyperparameters_bnb(X_train, y_train)
