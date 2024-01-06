@@ -325,7 +325,7 @@ def visualize(df):
         y_numerical = y.map({'positive': 0, 'negative':1, 'neutral':2})
 
         # Split the data into training and testing sets
-        X_train, X_test, y_train, y_test = train_test_split(X, y_numerical, test_size=0.2, random_state=42)
+        X_train, X_test, y_train, y_test = train_test_split(X, y_numerical, test_size=0.3, random_state=42)
 
         def model_Evaluate(model):
             # Predict values for Test dataset
@@ -365,13 +365,6 @@ def visualize(df):
         st.subheader("Evaluation for Bernoulli Naive Bayes Model:")
         model_Evaluate(best_bnb_model)
         y_pred_original = best_bnb_model.predict(X_test)
-             
-        # Create an SVM classifier
-        SVMmodel = SVC()
-        SVMmodel.fit(X_train, y_train)
-        st.subheader("Evaluation for SVM Model:")
-        model_Evaluate(SVMmodel, X-test, y_test)
-        y_pred_original = SVMmodel.predict(X_test)
 
 def sideBar():
     with st.sidebar:
