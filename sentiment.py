@@ -330,18 +330,14 @@ def sideBar():
  with st.sidebar:
     selected=option_menu(
         menu_title="Main Menu",
-        options=["Home","Visualization"],
-        icons=["house","eye"],
+        options=["Home"],
+        icons=["house"],
         menu_icon="cast",
         default_index=0
     )
  if selected=="Home":
     #st.subheader(f"Page: {selected}")
     df = Home()
-             
- if selected=="Visualization":
-    df = Home()
-    #st.subheader(f"Page: {selected}")
     visualize(df)
 
 sideBar()
