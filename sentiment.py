@@ -45,15 +45,16 @@ st.sidebar.image("image/carat.png", caption="Developed and Maintained by: Hidaya
 # switcher
 st.sidebar.header("Twitter Analysis")
 
+def Home():
 upl = st.file_uploader('Upload file')
 
-def Home(upl):
+    if upl:
     df = pd.read_csv(upl, encoding='latin-1')
     st.dataframe(df, use_container_width=True)
     positive_percentage = 0  # Initialize the variables before the if block
     negative_percentage = 0
     neutral_percentage = 0
-
+    
     if st.button('Clean Data'):
         # convert all tweet into lowercase
         df['tweets'] = df['tweets'].str.lower()
@@ -100,20 +101,17 @@ def Home(upl):
 
         # Remove short words
         df['tweets'] = df['tweets'].apply(lambda x: ' '.join([w for w in x.split() if len(w) > 3]))
-
-        # Remove short words
-        df['tweets'] = df['tweets'].apply(lambda x: ' '.join([w for w in x.split() if len(w) > 3]))
-
+    
         # Remove hashtag
         def remove_hashtags(tweets, pattern):
             r = re.findall(pattern, tweets)
-
+    
             for i in r:
                 text = re.sub(i, '', tweets)
             return tweets
-
+    
         df['tweets'] = np.vectorize(remove_hashtags)(df['tweets'], "#[\W]*")
-
+    
         # Emoji removal
         def remove_emojis(string):
             remove_emoji = re.compile(
@@ -123,18 +121,18 @@ def Home(upl):
                 u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
                 "]+", flags=re.UNICODE)
             return remove_emoji.sub(r'', string).encode("utf-8").decode("utf-8")
-
+    
         df['tweets'] = df['tweets'].apply(remove_emojis)
-
+    
         # Lemmatization
         lemmatizer = WordNetLemmatizer()
         wordnet_map = {"N": wordnet.NOUN, "V": wordnet.VERB, "R": wordnet.ADV}
-
+    
         def lemmatize_words(tweets):
             pos_tagged_text = nltk.pos_tag(tweets.split())
             return " ".join([lemmatizer.lemmatize(word, wordnet_map.get(pos[0], wordnet.NOUN)) for word, pos in
                              pos_tagged_text])
-
+    
         # Prepare Stop words
         stop_words = stopwords.words('english')
         stop_words = ['from', 'https', 'twitter', 'still', "no", "nor", "aren't", 'couldn', "couldn't", 'didn',
@@ -142,91 +140,91 @@ def Home(upl):
                       "haven't", 'isn', "isn't", 'mightn', "mightn't", 'mustn', "mustn't", 'needn', "needn't", 'no',
                       'not', "shan't", 'shan', "shan't", 'shouldn', "shouldn't", "that'll", 'wasn', "wasn't", 'weren',
                       "weren't", "won't", 'wouldn', "wouldn't"]
-
+    
         def remove_stopwords(tweets):
             return [[word for word in simple_preprocess(str(tweets)) if word not in stop_words] for tweets in
                     tweets]
-
+    
         df['stop_word'] = remove_stopwords(df['tweets'])
         df.head()
-
+    
         # Tokenize Word
         def tokenize(tweets):
             tokenizer = RegexpTokenizer(r'\w+')
             return tokenizer.tokenize(tweets)
-
+    
         df['tweets'] = df['tweets'].apply(tokenize)
         df['tweets'].head()
-
+    
         df.drop_duplicates(subset='tweets', keep='first', inplace=True)
-
+    
         # Display the count of unique rows after removing duplicates
         st.write(f"Number of unique tweets after removing duplicates: {len(df)}")
-
+    
         # Initialize sentiment counts
         sentiment_counts = {"Positive": 0, "Negative": 0, "Neutral": 0}
-
+    
         def calculate_vader_sentiment(tweet_list):
             sentiments = []
-
+    
             for tweet in tweet_list:
                 # Join the list of tokens into a single string
                 text = ' '.join(tweet)
-
+    
                 sentiment_scores = sid.polarity_scores(text)
                 compound_score = sentiment_scores['compound']
-
+    
                 if compound_score >= 0.05:
                     sentiments.append('positive')
                 elif compound_score <= -0.05:
                     sentiments.append('negative')
                 else:
                     sentiments.append('neutral')
-
+    
             return sentiments
-
+    
         # Apply the modified function to the 'tweets' column
         df['vader_sentiment_label'] = calculate_vader_sentiment(df['tweets'])
         df['vader_compound_score'] = df['tweets'].apply(lambda x: sid.polarity_scores(' '.join(x))['compound'])
-
+    
         # Calculate percentages
         if df is not None:
             # Initialize sentiment counts
             sentiment_counts = {"Positive": 0, "Negative": 0, "Neutral": 0}
-
+    
             # Create Streamlit progress bar
             total_progress = st.progress(0)
-
+    
             # Loop through each text and calculate the sentiment
             for i, tokens in enumerate(df['tweets']):
-
+    
                 # Join the list of tokens into a single string
                 text = ' '.join(tokens)
-
+    
                 # Calculate the VADER sentiment label
                 vader_sentiment_label = sid.polarity_scores(text)
                 compound_score = vader_sentiment_label['compound']
-
+    
                 if compound_score >= 0.05:
                     sentiment_counts["Positive"] += 1
                 elif compound_score <= -0.05:
                     sentiment_counts["Negative"] += 1
                 else:
                     sentiment_counts["Neutral"] += 1
-
+    
                 # Update Streamlit total progress bar
                 total_progress.progress((i + 1) / len(df))
-
+    
             # Close Streamlit total progress bar
             st.success("Sentiment analysis completed!")
-
+    
             # Display sentiment percentages
             total_tweets = len(df)
             vader_positive_percentage = (sentiment_counts["Positive"] / total_tweets) * 100
             vader_negative_percentage = (sentiment_counts["Negative"] / total_tweets) * 100
             vader_neutral_percentage = (sentiment_counts["Neutral"] / total_tweets) * 100
             st.write("Sentiment Analysis Results:")
-
+    
             # Display individual progress bars for positive, negative, and neutral
             st.write("Progress by Sentiment:")
             st.write("Positive Percentage: {:.2f}%".format(vader_positive_percentage))
@@ -237,7 +235,6 @@ def Home(upl):
             st.progress(vader_neutral_percentage / 100)
             st.dataframe(df, use_container_width=True)
             return df
-            
                         
 def visualize(df):
                         # Filter tweets related to election, pru, and pilihanraya
@@ -372,17 +369,17 @@ def visualize(df):
                             y_pred_original = SVMmodel.predict(X_test)
 
 def sideBar():
-    with st.sidebar:
-        selected = option_menu(
-            menu_title="Main Menu",
-            options=["Home"],
-            icons=["house"],
-            menu_icon="cast",
-            default_index=0
-        )
-    if selected == "Home":
-            df = Home(upl)
-            visualize(df)
-
+ with st.sidebar:
+    selected=option_menu(
+        menu_title="Main Menu",
+        options=["Home"],
+        icons=["house"],
+        menu_icon="cast",
+        default_index=0
+    )
+ if selected=="Home":
+    #st.subheader(f"Page: {selected}")
+    df = Home()
+    visualize(df)
 
 sideBar()
