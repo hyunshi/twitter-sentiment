@@ -152,7 +152,7 @@ def Home():
                 tokenizer = RegexpTokenizer(r'\w+')
                 return tokenizer.tokenize(tweets)
         
-            df['tweets'] = df['tweets'].apply(tokenize)
+            df['tweets'] = df['tweets'].apply(tokenize).tolist()
             df['tweets'].head()
         
             df.drop_duplicates(subset='tweets', keep='first', inplace=True)
