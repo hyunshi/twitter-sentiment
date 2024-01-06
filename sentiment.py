@@ -332,8 +332,7 @@ def visualize(df):
     
         # Vectorize the resampled data
         vectorizer = TfidfVectorizer(max_features=5000)
-        X_train_resampled_vectorized = vectorizer.fit_transform(X_train_resampled['tweets'].apply(lambda x: ' '.join(x)))
-        X_train_resampled_vectorized = vectorizer.fit_transform(X_train_resampled['tweets'].apply(lambda x: ' '.join(x)))
+        X_train_resampled_vectorized = vectorizer.fit_transform(X_train_resampled['tweets'].apply(lambda x: ' '.join(x)).tolist())
         X_test_vectorized = vectorizer.transform(X_test['tweets'].apply(lambda x: ' '.join(x)))
         
         def model_Evaluate(model):
