@@ -45,7 +45,7 @@ st.sidebar.image("image/carat.png",caption="Developed and Maintaned by: Hidayah 
          
 #switcher
 st.sidebar.header("Twitter Analysis")
-    with st.expander('Analyze CSV'):
+st.expander('Analyze CSV'):
         upl = st.file_uploader('Upload file')
         if upl:
                 df = pd.read_csv(upl, encoding='latin-1')
