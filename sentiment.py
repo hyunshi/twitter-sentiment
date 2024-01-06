@@ -373,9 +373,9 @@ def visualize(df):
             if hasattr(model, "decision_function"):
                 decision_values = model.decision_function(X_test)
             else:
-                decision_values = model.predict_proba(X_test)[:, 1]
+                decision_values = model.predict_proba(X_test)
 
-            fpr, tpr, _ = roc_curve(y_test, model.predict_proba(X_test)[:, 1])
+            fpr, tpr, _ = roc_curve(y_test, decision_values)
             roc_auc = auc(fpr, tpr)
         
             # Display ROC curve
