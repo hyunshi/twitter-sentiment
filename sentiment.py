@@ -333,7 +333,9 @@ def visualize(df):
         # Vectorize the resampled data
         vectorizer = TfidfVectorizer(max_features=5000)
         X_train_resampled_vectorized = vectorizer.fit_transform(X_train_resampled['tweets'].apply(lambda x: ' '.join(x)))
-
+        X_train_resampled_vectorized = vectorizer.fit_transform(X_train_resampled['tweets'].apply(lambda x: ' '.join(x)))
+        X_test_vectorized = vectorizer.transform(X_test['tweets'].apply(lambda x: ' '.join(x)))
+        
         def model_Evaluate(model):
             # Predict values for Test dataset
             y_pred = model.predict(X_test)
@@ -366,7 +368,7 @@ def visualize(df):
         bnb_model.fit(X_train_resampled_vectorized, y_train_resampled)
     
         # Evaluate the model
-        model_Evaluate(bnb_model, X_test, y_test)
+        model_Evaluate(bnb_model, X_test_vectorized, y_test)
         
         # Create a Best Bernoulli Naive Bayes classifier
         best_bnb_model = tune_hyperparameters_bnb(X_train, y_train)
