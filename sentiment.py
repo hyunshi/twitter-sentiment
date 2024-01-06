@@ -314,17 +314,6 @@ def visualize(df):
             grid_search.fit(X_train, y_train)
 
             return grid_search.best_estimator_
-            
-        def tune_hyperparameters_gnb(X_train, y_train):
-            # Create the Gaussian Naive Bayes classifier
-            gnb_model = GaussianNB()
-        
-            # No hyperparameters to tune for Gaussian Naive Bayes
-        
-            # Fit the Gaussian Naive Bayes model to the data
-            gnb_model.fit(X_train.toarray(), y_train)
-        
-            return gnb_model
         
         def tune_hyperparameters_mnb(X_train, y_train):
             # Define the parameter grid for Multinomial Naive Bayes
@@ -388,11 +377,6 @@ def visualize(df):
         st.write(f"Mean Accuracy: {np.mean(cv_scores)}")
         st.write(f"Standard Deviation: {np.std(cv_scores)}")
 
-        # Create a Best Gaussian Naive Bayes classifier
-        best_gnb_model = tune_hyperparameters_gnb(X_train, y_train)
-        st.subheader("Evaluation for Gaussian Naive Bayes Model:")
-        model_Evaluate(best_gnb_model)
-    
         # Create a Best Multinomial Naive Bayes classifier
         best_mnb_model = tune_hyperparameters_mnb(X_train, y_train)
         st.subheader("Evaluation for Multinomial Naive Bayes Model:")
