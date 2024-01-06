@@ -226,7 +226,7 @@ with st.expander('Analyze CSV'):
                 total_progress = st.progress(0)
 
                 # Loop through each text and calculate the sentiment
-            for i, tokens in enumerate(df['tweets']):
+                for i, tokens in enumerate(df['tweets']):
                     # Join the list of tokens into a single string
                     text = ' '.join(tokens)
 
@@ -270,7 +270,7 @@ with st.expander('Analyze CSV'):
                     st.write("Neutral Percentage: {:.2f}%".format(vader_neutral_percentage))
                     st.progress(vader_neutral_percentage / 100)
                     st.dataframe(df, use_container_width=True)
-            return df
+                    return df
 
 
 def visualize(df):
