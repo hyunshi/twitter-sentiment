@@ -319,7 +319,7 @@ def visualize(df):
 
         # Convert the list of arrays to a 2D NumPy array
         X = vectorizer.fit_transform(df['tweets'].apply(lambda x: ' '.join(x)))
-        y = df['sentiment']
+        y = df['vader_sentiment_label']
 
         # Convert sentiment labels to numerical values
         y_numerical = y.map({'positive': 0, 'negative':1, 'neutral':2})
