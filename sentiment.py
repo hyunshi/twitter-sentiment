@@ -316,7 +316,7 @@ def visualize(df):
             return grid_search.best_estimator_
 
         vectorizer = TfidfVectorizer(max_features=5000)
-        max_features = vectorizer.get_feature_names_out()
+        max_features = vectorizer.get_feature_names()
         st.write(f"TF-IDF Max Features: {max_features}")
 
         # Convert the list of arrays to a 2D NumPy array
