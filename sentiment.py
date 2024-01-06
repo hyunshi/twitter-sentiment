@@ -45,19 +45,6 @@ st.sidebar.image("image/carat.png",caption="Developed and Maintaned by: Hidayah 
          
 #switcher
 st.sidebar.header("Twitter Analysis")
-def Home():
-    with st.expander('Analyze tweets'):
-            tweets = st.text_input('tweets here: ')
-            if tweets:
-                blob = TextBlob(tweets)
-                st.write('Polarity: ', round(blob.sentiment.polarity,2))
-                st.write('Subjectivity: ', round(blob.sentiment.subjectivity,2))
-
-
-            pre = st.text_input('Clean tweets: ')
-            if pre:
-                st.write(cleantext.clean(pre, clean_all= False, extra_spaces=True ,
-                                        stopwords=True ,lowercase=True ,numbers=True , punct=True))
     with st.expander('Analyze CSV'):
         upl = st.file_uploader('Upload file')
         if upl:
@@ -280,17 +267,13 @@ def Home():
                         
                         # Display individual progress bars for positive, negative, and neutral
                         st.write("Progress by Sentiment:")
-                        st.write("Positive Percentage: {:.2f}%".format(positive_percentage))
-                        st.progress(positive_percentage / 100)
-                        st.write("Negative Percentage: {:.2f}%".format(negative_percentage))
-                        st.progress(negative_percentage / 100)
-                        st.write("Neutral Percentage: {:.2f}%".format(neutral_percentage))
-                        st.progress(neutral_percentage / 100)
-                        st.dataframe(df, use_container_width=True)
-                        st.write("VADER Sentiment Analysis Results:")
                         st.write("Positive Percentage: {:.2f}%".format(vader_positive_percentage))
+                        st.progress(vader_positive_percentage / 100)
                         st.write("Negative Percentage: {:.2f}%".format(vader_negative_percentage))
+                        st.progress(vader_negative_percentage / 100)
                         st.write("Neutral Percentage: {:.2f}%".format(vader_neutral_percentage))
+                        st.progress(vader_neutral_percentage / 100)
+                        st.dataframe(df, use_container_width=True)
                         return df
                         
                         
