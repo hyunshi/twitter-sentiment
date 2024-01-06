@@ -19,7 +19,7 @@ from imblearn.over_sampling import SMOTE
 from streamlit_option_menu import option_menu
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, roc_curve, auc
 from sklearn.naive_bayes import MultinomialNB, BernoulliNB, GaussianNB
 from PIL import Image
 from tqdm import tqdm
