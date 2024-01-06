@@ -19,7 +19,7 @@ from imblearn.over_sampling import SMOTE
 from streamlit_option_menu import option_menu
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score
+from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.naive_bayes import MultinomialNB, BernoulliNB, GaussianNB
 from sklearn.preprocessing import label_binarize
 from PIL import Image
@@ -347,8 +347,6 @@ def visualize(df):
             # Predict values for Test dataset
             y_pred = model.predict(X_test)
 
-            y_bin = label_binarize(y_test, classes=[0, 1, 2])
-
             # Print the evaluation metrics for the dataset.
             classification_rep = classification_report(y_test, y_pred)
             st.write("Classification Report:")
@@ -371,47 +369,6 @@ def visualize(df):
             plt.ylabel("Actual values", fontdict={'size':14}, labelpad=10)
             plt.title("Confusion Matrix", fontdict={'size':18}, pad=20)
             st.pyplot(plt)
-
-            # Compute ROC curve and ROC area for each class
-            fpr = dict()
-            tpr = dict()
-            roc_auc = dict()
-        
-            for i in range(3):  # Assuming 3 classes (positive, negative, neutral)
-                fpr[i], tpr[i], _ = roc_curve(y_bin[:, i], y_pred[:, i])
-                roc_auc[i] = auc(fpr[i], tpr[i])
-        
-            # Compute micro-average ROC curve and ROC area
-            fpr["micro"], tpr["micro"], _ = roc_curve(y_bin.ravel(), y_pred.ravel())
-            roc_auc["micro"] = auc(fpr["micro"], tpr["micro"])
-        
-            # Display micro-averaged ROC curve
-            st.write("Micro-Averaged ROC Curve:")
-            plt.figure(figsize=(8, 6))
-            plt.plot(fpr["micro"], tpr["micro"], color='darkorange', lw=2, label=f'Micro-Averaged ROC curve (area = {roc_auc["micro"]:.2f})')
-            plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
-            plt.xlim([0.0, 1.0])
-            plt.ylim([0.0, 1.05])
-            plt.xlabel('False Positive Rate')
-            plt.ylabel('True Positive Rate')
-            plt.title('Micro-Averaged Receiver Operating Characteristic (ROC) Curve')
-            plt.legend(loc="lower right")
-            st.pyplot(plt)
-            
-            # Display ROC curve for each class
-            st.write("ROC Curve for Each Class:")
-            for i in range(3):
-                plt.figure(figsize=(8, 6))
-                plt.plot(fpr[i], tpr[i], lw=2, label=f'ROC curve for class {i} (area = {roc_auc[i]:.2f})')
-                plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
-                plt.xlim([0.0, 1.0])
-                plt.ylim([0.0, 1.05])
-                plt.xlabel('False Positive Rate')
-                plt.ylabel('True Positive Rate')
-                plt.title(f'Receiver Operating Characteristic (ROC) Curve for class {i}')
-                plt.legend(loc="lower right")
-                st.pyplot(plt)
-
              
         # Create a Best Bernoulli Naive Bayes classifier
         best_bnb_model = tune_hyperparameters_bnb(X_train, y_train)
