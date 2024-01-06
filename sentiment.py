@@ -326,15 +326,7 @@ def visualize(df):
 
         # Split the data into training and testing sets
         X_train, X_test, y_train, y_test = train_test_split(X, y_numerical, test_size=0.2, random_state=42)
-        # Apply SMOTE for oversampling to handle imbalance
-        smote = SMOTE(sampling_strategy='auto', random_state=42)
-        X_train_resampled, y_train_resampled = smote.fit_resample(X_train, y_train)
-    
-        # Vectorize the resampled data
-        vectorizer = TfidfVectorizer(max_features=5000)
-        X_train_resampled_vectorized = vectorizer.fit_transform(X_train_resampled['tweets'].apply(lambda x: ' '.join(x)).tolist())
-        X_test_vectorized = vectorizer.transform(X_test['tweets'].apply(lambda x: ' '.join(x)))
-        
+
         def model_Evaluate(model):
             # Predict values for Test dataset
             y_pred = model.predict(X_test)
@@ -362,13 +354,6 @@ def visualize(df):
             plt.title("Confusion Matrix", fontdict={'size':18}, pad=20)
             st.pyplot(plt)
              
-        # Example using Bernoulli Naive Bayes
-        bnb_model = BernoulliNB()
-        bnb_model.fit(X_train_resampled_vectorized, y_train_resampled)
-    
-        # Evaluate the model
-        model_Evaluate(bnb_model, X_test_vectorized, y_test)
-        
         # Create a Best Bernoulli Naive Bayes classifier
         best_bnb_model = tune_hyperparameters_bnb(X_train, y_train)
         cv_scores = cross_val_score(best_bnb_model, X_train, y_train, cv=5, scoring='accuracy')
@@ -385,7 +370,7 @@ def visualize(df):
         SVMmodel = SVC()
         SVMmodel.fit(X_train, y_train)
         st.subheader("Evaluation for SVM Model:")
-        model_Evaluate(SVMmodel, X_test, y_test)
+        model_Evaluate(SVMmodel, X-test, y_test)
         y_pred_original = SVMmodel.predict(X_test)
 
 def sideBar():
