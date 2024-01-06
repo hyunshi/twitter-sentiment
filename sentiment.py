@@ -238,7 +238,7 @@ def Home():
 def visualize(df):
                         # Filter tweets related to election, pru, and pilihanraya
                         election_keywords = ['general', 'pru15', 'malaysia']
-                        election_related_tweets = df[df['tweets'].apply(lambda x: any(keyword in x.split() for keyword in election_keywords))]
+                        election_related_tweets = df[df['tweets'].apply(lambda x: any(keyword in x for keyword in election_keywords))]
 
                         # Check if there are positive and negative tweets related to election
                         positive_tweets_election = election_related_tweets[election_related_tweets['sentiment'] == 'positive']['tweets']
