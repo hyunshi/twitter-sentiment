@@ -315,9 +315,8 @@ def visualize(df):
 
             return grid_search.best_estimator_
 
-        vectorizer = TfidfVectorizer(max_features=5000)
-        vectorizer.fit(X_train)
-        st.write(f"TF-IDF Max Features: {vectorizer.get_feature_names()}")
+        vectorizer = TfidfVectorizer(max_features=5000000)
+
 
         # Convert the list of arrays to a 2D NumPy array
         X = vectorizer.fit_transform(df['tweets'].apply(lambda x: ' '.join(x)))
