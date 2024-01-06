@@ -15,7 +15,7 @@ from nltk.corpus import wordnet
 from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
 from gensim.utils import simple_preprocess
-from textblob import TextBlob
+from imblearn.over_sampling import SMOTE
 from streamlit_option_menu import option_menu
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -327,6 +327,11 @@ def visualize(df):
         # Split the data into training and testing sets
         X_train, X_test, y_train, y_test = train_test_split(X, y_numerical, test_size=0.2, random_state=42)
 
+        # Apply SMOTE for oversampling to handle imbalance
+        smote = SMOTE(sampling_strategy='auto', random_state=42)
+        X_train_resampled, y_train_resampled = smote.fit_resample(X_train.apply(lambda x: ' '.join(x)), y_train)
+        X_train_resampled_vectorized = vectorizer.fit_transform(X_train_resampled)
+
         def model_Evaluate(model):
             # Predict values for Test dataset
             y_pred = model.predict(X_test)
@@ -365,12 +370,19 @@ def visualize(df):
         st.subheader("Evaluation for Bernoulli Naive Bayes Model:")
         model_Evaluate(best_bnb_model)
         y_pred_original = best_bnb_model.predict(X_test)
+
+        # Example using Bernoulli Naive Bayes
+        bnb_model = BernoulliNB()
+        bnb_model.fit(X_train_resampled_vectorized, y_train_resampled)
+    
+        # Evaluate the model
+        model_Evaluate(bnb_model, X_test, y_test)
              
         # Create an SVM classifier
         SVMmodel = SVC()
         SVMmodel.fit(X_train, y_train)
         st.subheader("Evaluation for SVM Model:")
-        model_Evaluate(SVMmodel)
+        model_Evaluate(SVMmodel, X-test, y_test)
         y_pred_original = SVMmodel.predict(X_test)
 
 def sideBar():
