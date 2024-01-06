@@ -236,6 +236,7 @@ def Home():
                 return df
                         
 def visualize(df):
+    def visualize(df):
     # Filter tweets related to election, pru, and pilihanraya
     election_keywords = ['general', 'pru15', 'malaysia']
     election_related_tweets = df[df['tweets'].apply(lambda x: any(keyword in ' '.join(x) for keyword in election_keywords))]
@@ -254,51 +255,41 @@ def visualize(df):
 
         # WordCloud for Positive Sentiment related to election
         with col1:
-          st.write("WordCloud for Positive Sentiment Related to Election:")
-          wordcloud_positive_election = WordCloud(width=400, height=400, background_color='black').generate(positive_tweets_election)
-          image_positive = wordcloud_positive_election.to_image()
-          st.image(image_positive, caption='Positive Sentiment WordCloud', use_column_width=True)
+            st.write("WordCloud for Positive Sentiment Related to Election:")
+            wordcloud_positive_election = WordCloud(width=400, height=400, background_color='black').generate(positive_tweets_election)
+            image_positive = wordcloud_positive_election.to_image()
+            st.image(image_positive, caption='Positive Sentiment WordCloud', use_column_width=True)
 
-       # WordCloud for Negative Sentiment related to election
+        # WordCloud for Negative Sentiment related to election
         with col2:
-          st.write("WordCloud for Negative Sentiment Related to Election:")
-          wordcloud_negative_election = WordCloud(width=400, height=400, background_color='black').generate(negative_tweets_election)
-          image_negative = wordcloud_negative_election.to_image()
-          st.image(image_negative, caption='Negative Sentiment WordCloud', use_column_width=True)
-        
-        # Create empty lists to store percentages for each text
-        positive_percentages = []
-        negative_percentages = []
-        neutral_percentages = []
-        
-        # Loop through each text and calculate the sentiment
-        for tokens in df['tweets']:
-            # Join the list of tokens into a single string
-            text = ' '.join(tokens)
-            
-            # Create a TextBlob object
-            analysis = TextBlob(text)
-            
-            # Get the sentiment score
-            sentiment_score = analysis.sentiment.polarity
-            
-            if sentiment_score > 0:
-                positive_percentages.append(sentiment_score * 100)
-                negative_percentages.append(0)
-                neutral_percentages.append(0)
-            elif sentiment_score < 0:
-                positive_percentages.append(0)
-                negative_percentages.append(-sentiment_score * 100)
-                neutral_percentages.append(0)
-            else:
-                positive_percentages.append(0)
-                negative_percentages.append(0)
-                neutral_percentages.append(0)
+            st.write("WordCloud for Negative Sentiment Related to Election:")
+            wordcloud_negative_election = WordCloud(width=400, height=400, background_color='black').generate(negative_tweets_election)
+            image_negative = wordcloud_negative_election.to_image()
+            st.image(image_negative, caption='Negative Sentiment WordCloud', use_column_width=True)
 
-        # Add the percentages as new columns in the DataFrame
-        df['positive_percentage'] = positive_percentages
-        df['negative_percentage'] = negative_percentages
-        df['neutral_percentage'] = neutral_percentages
+        # Generate WordCloud based on Vader sentiment scores
+        vader_positive_tweets = election_related_tweets[election_related_tweets['vader_sentiment_label'] == 'positive']['tweets']
+        vader_negative_tweets = election_related_tweets[election_related_tweets['vader_sentiment_label'] == 'negative']['tweets']
+        
+        vader_positive_tweets = ' '.join(vader_positive_tweets.apply(lambda x: ' '.join(x)))
+        vader_negative_tweets = ' '.join(vader_negative_tweets.apply(lambda x: ' '.join(x)))
+
+        # Create a two-column layout for Vader sentiment WordClouds
+        col3, col4 = st.columns(2)
+
+        # WordCloud for Positive Sentiment based on Vader
+        with col3:
+            st.write("WordCloud for Positive Sentiment Based on Vader:")
+            wordcloud_positive_vader = WordCloud(width=400, height=400, background_color='black').generate(vader_positive_tweets)
+            image_positive_vader = wordcloud_positive_vader.to_image()
+            st.image(image_positive_vader, caption='Positive Sentiment WordCloud (Vader)', use_column_width=True)
+
+        # WordCloud for Negative Sentiment based on Vader
+        with col4:
+            st.write("WordCloud for Negative Sentiment Based on Vader:")
+            wordcloud_negative_vader = WordCloud(width=400, height=400, background_color='black').generate(vader_negative_tweets)
+            image_negative_vader = wordcloud_negative_vader.to_image()
+            st.image(image_negative_vader, caption='Negative Sentiment WordCloud (Vader)', use_column_width=True)
 
         def tune_hyperparameters_bnb(X_train, y_train):
                  # Define the parameter grid for Bernoulli Naive Bayes
