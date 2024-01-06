@@ -236,6 +236,7 @@ def Home(upl):
             st.write("Neutral Percentage: {:.2f}%".format(vader_neutral_percentage))
             st.progress(vader_neutral_percentage / 100)
             st.dataframe(df, use_container_width=True)
+            return df
             
                         
 def visualize(df):
