@@ -19,7 +19,7 @@ from imblearn.over_sampling import SMOTE
 from streamlit_option_menu import option_menu
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, roc_curve, auc
 from sklearn.naive_bayes import MultinomialNB, BernoulliNB, GaussianNB
 from sklearn.preprocessing import label_binarize
 from PIL import Image
@@ -346,6 +346,35 @@ def visualize(df):
         def model_Evaluate(model):
             # Predict values for Test dataset
             y_pred = model.predict(X_test)
+
+            # Convert sentiment labels to numerical values
+            y_numerical = label_binarize(y_test, classes=[0, 1, 2])
+
+            # Compute ROC curve and ROC area for each class
+            fpr = dict()
+            tpr = dict()
+            roc_auc = dict()
+        
+            for i in range(3):
+                fpr[i], tpr[i], _ = roc_curve(y_numerical[:, i], model.predict_proba(X_test)[:, i])
+                roc_auc[i] = auc(fpr[i], tpr[i])
+        
+            # Display the ROC curve
+            st.write("Receiver Operating Characteristic (ROC) Curve:")
+            plt.figure(figsize=(8, 6))
+        
+            for i in range(3):
+                plt.plot(fpr[i], tpr[i], label=f'Class {i} (AUC = {roc_auc[i]:.2f})')
+        
+            plt.plot([0, 1], [0, 1], 'k--', color='grey', linestyle='--', label='Random')
+            plt.xlabel('False Positive Rate')
+            plt.ylabel('True Positive Rate')
+            plt.title('ROC Curve')
+            plt.legend(loc='lower right')
+            plt.grid(True)
+            
+            # Display the ROC curve plot
+            st.pyplot(plt)
 
             # Print the evaluation metrics for the dataset.
             classification_rep = classification_report(y_test, y_pred)
