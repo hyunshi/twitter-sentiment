@@ -55,7 +55,51 @@ def Home(upl):
     neutral_percentage = 0
 
     if st.button('Clean Data'):
-        # ... (your existing cleaning and preprocessing code)
+        # convert all tweet into lowercase
+        df['tweets'] = df['tweets'].str.lower()
+
+        # Removing Twitter Handles(@User)
+        def remove_users(tweets):
+            remove_user = re.compile(r"@[A-Za-z0-9]+")
+            return remove_user.sub(r"", tweets)
+
+        df['tweets'] = df['tweets'].apply(remove_users)
+
+        # Remove links
+        def remove_links(tweets):
+            remove_no_link = re.sub(r"http\S+", "", tweets)
+            return remove_no_link
+
+        df['tweets'] = df['tweets'].apply(remove_links)
+        df['tweets'].tail()
+
+        # Remove Punctuations, Numbers, and Special Characters
+        english_punctuations = string.punctuation
+        punctuations_list = english_punctuations
+
+        def cleaning_punctuations(tweets):
+            translator = str.maketrans('', '', punctuations_list)
+            return tweets.translate(translator)
+
+        df['tweets'] = df['tweets'].apply(lambda x: cleaning_punctuations(x))
+        df['tweets'].tail()
+
+        # Repeating characters
+        def cleaning_repeating_char(tweets):
+            return re.sub(r'(.)1+', r'1', tweets)
+
+        df['tweets'] = df['tweets'].apply(lambda x: cleaning_repeating_char(x))
+        df['tweets'].tail()
+
+        # Remove Number
+        def cleaning_numbers(data):
+            return re.sub('[0-9]+', '', data)
+
+        df['tweets'] = df['tweets'].apply(lambda x: cleaning_numbers(x))
+        df['tweets'].tail()
+
+        # Remove short words
+        df['tweets'] = df['tweets'].apply(lambda x: ' '.join([w for w in x.split() if len(w) > 3]))
 
         # Remove short words
         df['tweets'] = df['tweets'].apply(lambda x: ' '.join([w for w in x.split() if len(w) > 3]))
