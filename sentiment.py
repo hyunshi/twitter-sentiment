@@ -47,7 +47,7 @@ st.sidebar.header("Twitter Analysis")
 
 upl = st.file_uploader('Upload file')
 
-if upl:
+def Home(upl):
     df = pd.read_csv(upl, encoding='latin-1')
     st.dataframe(df, use_container_width=True)
     positive_percentage = 0  # Initialize the variables before the if block
@@ -336,7 +336,10 @@ def sideBar():
             default_index=0
         )
     if selected == "Home":
-        visualize(df)  # Assuming df is defined globally
+        upl = st.file_uploader('Upload file')
+        if upl:
+            df = Home(upl)
+            visualize(df)
 
 
 sideBar()
