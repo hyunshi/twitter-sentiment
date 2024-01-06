@@ -46,8 +46,7 @@ st.sidebar.image("image/carat.png", caption="Developed and Maintained by: Hidaya
 st.sidebar.header("Twitter Analysis")
 
 def Home():
-upl = st.file_uploader('Upload file')
-
+    upl = st.file_uploader('Upload file')
     if upl:
     df = pd.read_csv(upl, encoding='latin-1')
     st.dataframe(df, use_container_width=True)
