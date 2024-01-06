@@ -270,152 +270,152 @@ with st.expander('Analyze CSV'):
             return df
 
 
-def visualize(df):
-    # Filter tweets related to election, pru, and pilihanraya
-    election_keywords = ['general', 'pru15', 'malaysia']
-    election_related_tweets = df[df['tweets'].apply(lambda x: any(keyword in x for keyword in election_keywords))]
-
-    # Check if there are positive and negative tweets related to election
-    positive_tweets_election = election_related_tweets[election_related_tweets['sentiment'] == 'positive']['tweets']
-    negative_tweets_election = election_related_tweets[election_related_tweets['sentiment'] == 'negative']['tweets']
-
-    if not positive_tweets_election.empty and not negative_tweets_election.empty:
-        # Generate WordClouds for positive and negative sentiments
-        positive_tweets_election = ' '.join(positive_tweets_election.apply(lambda x: ' '.join(x)))
-        negative_tweets_election = ' '.join(negative_tweets_election.apply(lambda x: ' '.join(x)))
-
-        # Create a two-column layout
-        col1, col2 = st.columns(2)
-
-        # WordCloud for Positive Sentiment related to election
-        with col1:
-          st.write("WordCloud for Positive Sentiment Related to Election:")
-          wordcloud_positive_election = WordCloud(width=400, height=400, background_color='black').generate(positive_tweets_election)
-          image_positive = wordcloud_positive_election.to_image()
-          st.image(image_positive, caption='Positive Sentiment WordCloud', use_column_width=True)
-
-       # WordCloud for Negative Sentiment related to election
-        with col2:
-          st.write("WordCloud for Negative Sentiment Related to Election:")
-          wordcloud_negative_election = WordCloud(width=400, height=400, background_color='black').generate(negative_tweets_election)
-          image_negative = wordcloud_negative_election.to_image()
-          st.image(image_negative, caption='Negative Sentiment WordCloud', use_column_width=True)
-        
-        # Create empty lists to store percentages for each text
-        positive_percentages = []
-        negative_percentages = []
-        neutral_percentages = []
-        
-        # Loop through each text and calculate the sentiment
-        for tokens in df['tweets']:
-            # Join the list of tokens into a single string
-            text = ' '.join(tokens)
+            def visualize(df):
+                # Filter tweets related to election, pru, and pilihanraya
+                election_keywords = ['general', 'pru15', 'malaysia']
+                election_related_tweets = df[df['tweets'].apply(lambda x: any(keyword in x for keyword in election_keywords))]
             
-            # Create a TextBlob object
-            analysis = TextBlob(text)
+                # Check if there are positive and negative tweets related to election
+                positive_tweets_election = election_related_tweets[election_related_tweets['sentiment'] == 'positive']['tweets']
+                negative_tweets_election = election_related_tweets[election_related_tweets['sentiment'] == 'negative']['tweets']
             
-            # Get the sentiment score
-            sentiment_score = analysis.sentiment.polarity
+                if not positive_tweets_election.empty and not negative_tweets_election.empty:
+                    # Generate WordClouds for positive and negative sentiments
+                    positive_tweets_election = ' '.join(positive_tweets_election.apply(lambda x: ' '.join(x)))
+                    negative_tweets_election = ' '.join(negative_tweets_election.apply(lambda x: ' '.join(x)))
             
-            if sentiment_score > 0:
-                positive_percentages.append(sentiment_score * 100)
-                negative_percentages.append(0)
-                neutral_percentages.append(0)
-            elif sentiment_score < 0:
-                positive_percentages.append(0)
-                negative_percentages.append(-sentiment_score * 100)
-                neutral_percentages.append(0)
-            else:
-                positive_percentages.append(0)
-                negative_percentages.append(0)
-                neutral_percentages.append(0)
-
-        # Add the percentages as new columns in the DataFrame
-        df['positive_percentage'] = positive_percentages
-        df['negative_percentage'] = negative_percentages
-        df['neutral_percentage'] = neutral_percentages
-
-        def tune_hyperparameters_bnb(X_train, y_train):
-                 # Define the parameter grid for Bernoulli Naive Bayes
-                 param_grid = {'alpha': [0.1, 0.5, 1.0, 1.5, 2.0]}
+                    # Create a two-column layout
+                    col1, col2 = st.columns(2)
+            
+                    # WordCloud for Positive Sentiment related to election
+                    with col1:
+                      st.write("WordCloud for Positive Sentiment Related to Election:")
+                      wordcloud_positive_election = WordCloud(width=400, height=400, background_color='black').generate(positive_tweets_election)
+                      image_positive = wordcloud_positive_election.to_image()
+                      st.image(image_positive, caption='Positive Sentiment WordCloud', use_column_width=True)
+            
+                   # WordCloud for Negative Sentiment related to election
+                    with col2:
+                      st.write("WordCloud for Negative Sentiment Related to Election:")
+                      wordcloud_negative_election = WordCloud(width=400, height=400, background_color='black').generate(negative_tweets_election)
+                      image_negative = wordcloud_negative_election.to_image()
+                      st.image(image_negative, caption='Negative Sentiment WordCloud', use_column_width=True)
                     
-                 # Create the Bernoulli Naive Bayes classifier
-                 bnb_model = BernoulliNB()
+                    # Create empty lists to store percentages for each text
+                    positive_percentages = []
+                    negative_percentages = []
+                    neutral_percentages = []
                     
-                 # Instantiate the GridSearchCV object
-                 grid_search = GridSearchCV(estimator=bnb_model, param_grid=param_grid, scoring='accuracy', cv=5)
-                    
-                 # Fit the GridSearchCV to the data
-                 grid_search.fit(X_train, y_train)
-                
-                 return grid_search.best_estimator_
-       
-        vectorizer = TfidfVectorizer(max_features=5000)
-
-        # Convert the list of arrays to a 2D NumPy array
-        X = vectorizer.fit_transform(df['tweets'].apply(lambda x: ' '.join(x)))
-        y = df['sentiment']
-             
-        # Convert sentiment labels to numerical values
-        y_numerical = y.map({'positive': 0, 'negative': 1, 'neutral': 2})
-
-        # Split the data into training and testing sets
-        X_train, X_test, y_train, y_test = train_test_split(X, y_numerical, test_size=0.2, random_state=42)
-
-        def model_Evaluate(model):
-            # Predict values for Test dataset
-            y_pred = model.predict(X_test)
-
-            # Print the evaluation metrics for the dataset.
-            classification_rep = classification_report(y_test, y_pred)
-            st.write("Classification Report:")
-            st.text(classification_rep)
-
-            # Compute and plot the Confusion matrix
-            cf_matrix = confusion_matrix(y_test, y_pred)
-            categories = ['Positive', 'Negative', 'Neutral']
-            group_percentages = ['{0:.2%}'.format(value) for value in cf_matrix.flatten() / np.sum(cf_matrix)]
-            group_names = ['TPpos', 'Eneg', 'Eneu', 'Epos', 'TPneg', 'Eneu', 'Epos', 'Eneg', 'TPneu']
-            labels = [f'{v1}\n{v2}' for v1, v2 in zip(group_names, group_percentages)]
-            labels = np.asarray(labels).reshape(3, 3)
+                    # Loop through each text and calculate the sentiment
+                    for tokens in df['tweets']:
+                        # Join the list of tokens into a single string
+                        text = ' '.join(tokens)
+                        
+                        # Create a TextBlob object
+                        analysis = TextBlob(text)
+                        
+                        # Get the sentiment score
+                        sentiment_score = analysis.sentiment.polarity
+                        
+                        if sentiment_score > 0:
+                            positive_percentages.append(sentiment_score * 100)
+                            negative_percentages.append(0)
+                            neutral_percentages.append(0)
+                        elif sentiment_score < 0:
+                            positive_percentages.append(0)
+                            negative_percentages.append(-sentiment_score * 100)
+                            neutral_percentages.append(0)
+                        else:
+                            positive_percentages.append(0)
+                            negative_percentages.append(0)
+                            neutral_percentages.append(0)
             
-            # Display the Confusion Matrix
-            st.write("Confusion Matrix:")
-            plt.figure(figsize=(8, 6))
-            sns.heatmap(cf_matrix, annot=labels, fmt='', cmap="Blues", cbar=False,
-                        xticklabels=categories, yticklabels=categories)
-            plt.xlabel("Predicted values", fontdict={'size':14}, labelpad=10)
-            plt.ylabel("Actual values", fontdict={'size':14}, labelpad=10)
-            plt.title("Confusion Matrix", fontdict={'size':18}, pad=20)
-            st.pyplot(plt)
-             
-        # Create a Best Bernoulli Naive Bayes classifier
-        best_bnb_model = tune_hyperparameters_bnb(X_train, y_train)
-        st.subheader("Evaluation for Bernoulli Naive Bayes Model:")
-        model_Evaluate(best_bnb_model)
-        y_pred_original = best_bnb_model.predict(X_test)
-             
-        # Create an SVM classifier
-        SVMmodel = SVC()
-        SVMmodel.fit(X_train, y_train)
-        st.subheader("Evaluation for SVM Model:")
-        model_Evaluate(SVMmodel)
-        y_pred_original = SVMmodel.predict(X_test)
-
-    def sideBar():
-        with st.sidebar:
-            selected = option_menu(
-                menu_title="Main Menu",
-                options=["Home", "Visualization"],
-                icons=["house", "eye"],
-                menu_icon="cast",
-                default_index=0
-            )
-        if selected == "Home":
-            df = Home()
-        elif selected == "Visualization":
-            df = Home()
-            visualize(df)
+                    # Add the percentages as new columns in the DataFrame
+                    df['positive_percentage'] = positive_percentages
+                    df['negative_percentage'] = negative_percentages
+                    df['neutral_percentage'] = neutral_percentages
+            
+                    def tune_hyperparameters_bnb(X_train, y_train):
+                             # Define the parameter grid for Bernoulli Naive Bayes
+                             param_grid = {'alpha': [0.1, 0.5, 1.0, 1.5, 2.0]}
+                                
+                             # Create the Bernoulli Naive Bayes classifier
+                             bnb_model = BernoulliNB()
+                                
+                             # Instantiate the GridSearchCV object
+                             grid_search = GridSearchCV(estimator=bnb_model, param_grid=param_grid, scoring='accuracy', cv=5)
+                                
+                             # Fit the GridSearchCV to the data
+                             grid_search.fit(X_train, y_train)
+                            
+                             return grid_search.best_estimator_
+                   
+                    vectorizer = TfidfVectorizer(max_features=5000)
+            
+                    # Convert the list of arrays to a 2D NumPy array
+                    X = vectorizer.fit_transform(df['tweets'].apply(lambda x: ' '.join(x)))
+                    y = df['sentiment']
+                         
+                    # Convert sentiment labels to numerical values
+                    y_numerical = y.map({'positive': 0, 'negative': 1, 'neutral': 2})
+            
+                    # Split the data into training and testing sets
+                    X_train, X_test, y_train, y_test = train_test_split(X, y_numerical, test_size=0.2, random_state=42)
+            
+                    def model_Evaluate(model):
+                        # Predict values for Test dataset
+                        y_pred = model.predict(X_test)
+            
+                        # Print the evaluation metrics for the dataset.
+                        classification_rep = classification_report(y_test, y_pred)
+                        st.write("Classification Report:")
+                        st.text(classification_rep)
+            
+                        # Compute and plot the Confusion matrix
+                        cf_matrix = confusion_matrix(y_test, y_pred)
+                        categories = ['Positive', 'Negative', 'Neutral']
+                        group_percentages = ['{0:.2%}'.format(value) for value in cf_matrix.flatten() / np.sum(cf_matrix)]
+                        group_names = ['TPpos', 'Eneg', 'Eneu', 'Epos', 'TPneg', 'Eneu', 'Epos', 'Eneg', 'TPneu']
+                        labels = [f'{v1}\n{v2}' for v1, v2 in zip(group_names, group_percentages)]
+                        labels = np.asarray(labels).reshape(3, 3)
+                        
+                        # Display the Confusion Matrix
+                        st.write("Confusion Matrix:")
+                        plt.figure(figsize=(8, 6))
+                        sns.heatmap(cf_matrix, annot=labels, fmt='', cmap="Blues", cbar=False,
+                                    xticklabels=categories, yticklabels=categories)
+                        plt.xlabel("Predicted values", fontdict={'size':14}, labelpad=10)
+                        plt.ylabel("Actual values", fontdict={'size':14}, labelpad=10)
+                        plt.title("Confusion Matrix", fontdict={'size':18}, pad=20)
+                        st.pyplot(plt)
+                         
+                    # Create a Best Bernoulli Naive Bayes classifier
+                    best_bnb_model = tune_hyperparameters_bnb(X_train, y_train)
+                    st.subheader("Evaluation for Bernoulli Naive Bayes Model:")
+                    model_Evaluate(best_bnb_model)
+                    y_pred_original = best_bnb_model.predict(X_test)
+                         
+                    # Create an SVM classifier
+                    SVMmodel = SVC()
+                    SVMmodel.fit(X_train, y_train)
+                    st.subheader("Evaluation for SVM Model:")
+                    model_Evaluate(SVMmodel)
+                    y_pred_original = SVMmodel.predict(X_test)
+            
+                def sideBar():
+                    with st.sidebar:
+                        selected = option_menu(
+                            menu_title="Main Menu",
+                            options=["Home", "Visualization"],
+                            icons=["house", "eye"],
+                            menu_icon="cast",
+                            default_index=0
+                        )
+                    if selected == "Home":
+                        df = Home()
+                    elif selected == "Visualization":
+                        df = Home()
+                        visualize(df)
 
     sideBar()
 
