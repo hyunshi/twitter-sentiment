@@ -50,7 +50,7 @@ st.sidebar.header("Twitter Analysis")
 def Home():
     # Add this line to download WordNet data
     nltk.download('wordnet')
-    nltk.download('stopwords'
+    nltk.download('stopwords')
 
     upl = st.file_uploader('Upload file')
     if upl:
