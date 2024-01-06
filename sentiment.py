@@ -223,7 +223,7 @@ with st.expander('Analyze CSV'):
                 total_progress = st.progress(0)
 
                 # Loop through each text and calculate the sentiment
-                for i, tokens in enumerate(df['tweets']):
+            for i, tokens in enumerate(df['tweets']):
                     # Join the list of tokens into a single string
                     text = ' '.join(tokens)
 
