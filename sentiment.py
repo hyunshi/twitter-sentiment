@@ -245,8 +245,8 @@ def visualize(df):
     election_related_tweets = df[df['tweets'].apply(lambda x: any(keyword in ' '.join(x) for keyword in election_keywords))]
 
     # Check if there are positive and negative tweets related to election
-    positive_tweets_election = election_related_tweets[election_related_tweets['sentiment'] == 'positive']['tweets']
-    negative_tweets_election = election_related_tweets[election_related_tweets['sentiment'] == 'negative']['tweets']
+    positive_tweets_election = election_related_tweets[election_related_tweets['vader_sentiment_label'] == 'positive']['tweets']
+    negative_tweets_election = election_related_tweets[election_related_tweets['vader_sentiment_label'] == 'negative']['tweets']
 
     if not positive_tweets_election.empty and not negative_tweets_election.empty:
         # Generate WordClouds for positive and negative sentiments
