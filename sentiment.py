@@ -10,6 +10,7 @@ import time
 import seaborn as sns
 import matplotlib.pyplot as plt
 import string
+from nltk.sentiment import SentimentIntensityAnalyzer
 nltk.download('wordnet')
 nltk.download('stopwords')
 nltk.download('vader_lexicon')
@@ -30,6 +31,9 @@ from tqdm import tqdm
 from wordcloud import WordCloud
 from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV
+
+# Define the sid variable (SentimentIntensityAnalyzer) in the global scope
+sid = SentimentIntensityAnalyzer()
 
 im = Image.open("image/carat.ico")
 st.set_page_config(page_title="FeelTech",page_icon=im,layout="wide")
