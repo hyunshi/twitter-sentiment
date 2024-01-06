@@ -205,21 +205,24 @@ def Home():
                     df['sentiment'] = df['tweets'].apply(lambda x: label_sentiment(x))
 
                     def calculate_vader_sentiment(tweet_list):
-                     sid = SentimentIntensityAnalyzer()
-                     sentiments = []
+                        sid = SentimentIntensityAnalyzer()
+                        sentiments = []
 
-                     for tweet in tweet_list:
-                          sentiment_scores = sid.polarity_scores(tweet)
-                          compound_score = sentiment_scores['compound']
-                  
-                          if compound_score >= 0.05:
-                              sentiments.append('positive')
-                          elif compound_score <= -0.05:
-                              sentiments.append('negative')
-                          else:
-                              sentiments.append('neutral')
-                  
-                     return sentiments
+                        for tweet in tweet_list:
+                             # Join the list of tokens into a single string
+                             text = ' '.join(tweet)
+        
+                             sentiment_scores = sid.polarity_scores(text)
+                             compound_score = sentiment_scores['compound']
+
+                             if compound_score >= 0.05:
+                                       sentiments.append('positive')
+                             elif compound_score <= -0.05:
+                                       sentiments.append('negative')
+                             else:
+                                       sentiments.append('neutral')
+
+                         return sentiments
 
                     # Apply the modified function to the 'tweets' column
                     df['vader_sentiment_label'] = calculate_vader_sentiment(df['tweets'])
