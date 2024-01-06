@@ -271,7 +271,7 @@ with st.expander('Analyze CSV'):
                     st.write("Neutral Percentage: {:.2f}%".format(vader_neutral_percentage))
                     st.progress(vader_neutral_percentage / 100)
                     st.dataframe(df, use_container_width=True)
-                return df
+            return df
 
 def visualize(df):
     # Filter tweets related to election, pru, and pilihanraya
