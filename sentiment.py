@@ -370,6 +370,11 @@ def visualize(df):
             st.pyplot(plt)
 
             # Calculate ROC curve and AUC
+            if hasattr(model, "decision_function"):
+                decision_values = model.decision_function(X_test)
+            else:
+                decision_values = model.predict_proba(X_test)[:, 1]
+
             fpr, tpr, _ = roc_curve(y_test, model.predict_proba(X_test)[:, 1])
             roc_auc = auc(fpr, tpr)
         
