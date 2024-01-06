@@ -222,7 +222,7 @@ def Home():
                              else:
                                        sentiments.append('neutral')
 
-                         return sentiments
+                        return sentiments
 
                     # Apply the modified function to the 'tweets' column
                     df['vader_sentiment_label'] = calculate_vader_sentiment(df['tweets'])
