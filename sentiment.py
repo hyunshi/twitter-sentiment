@@ -356,6 +356,12 @@ def visualize(df):
              
         # Create a Best Bernoulli Naive Bayes classifier
         best_bnb_model = tune_hyperparameters_bnb(X_train, y_train)
+        cv_scores = cross_val_score(bnb_model, X_train, y_train, cv=5, scoring='accuracy')
+        st.write("Cross-Validation Scores:")
+        st.write(cv_scores)
+        st.write(f"Mean Accuracy: {np.mean(cv_scores)}")
+        st.write(f"Standard Deviation: {np.std(cv_scores)}")
+        
         st.subheader("Evaluation for Bernoulli Naive Bayes Model:")
         model_Evaluate(best_bnb_model)
         y_pred_original = best_bnb_model.predict(X_test)
