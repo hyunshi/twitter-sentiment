@@ -17,7 +17,7 @@ from nltk.tokenize import RegexpTokenizer
 from gensim.utils import simple_preprocess
 from textblob import TextBlob
 from streamlit_option_menu import option_menu
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.naive_bayes import MultinomialNB, BernoulliNB
