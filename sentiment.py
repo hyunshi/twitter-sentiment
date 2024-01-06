@@ -46,12 +46,14 @@ st.sidebar.image("image/carat.png", caption="Developed and Maintained by: Hidaya
 st.sidebar.header("Twitter Analysis")
 with st.expander('Analyze CSV'):
     upl = st.file_uploader('Upload file')
+    
     if upl:
         df = pd.read_csv(upl, encoding='latin-1')
         st.dataframe(df, use_container_width=True)
         positive_percentage = 0  # Initialize the variables before the if block
         negative_percentage = 0
         neutral_percentage = 0
+        
         if st.button('Clean Data'):
             # convert all tweet into lowercase
             df['tweets'] = df['tweets'].str.lower()
@@ -102,6 +104,7 @@ with st.expander('Analyze CSV'):
             # Remove hashtag
             def remove_hashtags(tweets, pattern):
                 r = re.findall(pattern, tweets)
+                
                 for i in r:
                     text = re.sub(i, '', tweets)
                 return tweets
@@ -243,30 +246,30 @@ with st.expander('Analyze CSV'):
                     # Update Streamlit total progress bar
                     total_progress.progress((i + 1) / len(df))
 
-                # Close Streamlit total progress bar
-                st.success("Sentiment analysis completed!")
+                    # Close Streamlit total progress bar
+                    st.success("Sentiment analysis completed!")
 
-                # Display sentiment percentages
-                total_tweets = len(df)
-                positive_percentage = (sentiment_counts["Positive"] / total_tweets) * 100
-                negative_percentage = (sentiment_counts["Negative"] / total_tweets) * 100
-                neutral_percentage = (sentiment_counts["Neutral"] / total_tweets) * 100
+                    # Display sentiment percentages
+                    total_tweets = len(df)
+                    positive_percentage = (sentiment_counts["Positive"] / total_tweets) * 100
+                    negative_percentage = (sentiment_counts["Negative"] / total_tweets) * 100
+                    neutral_percentage = (sentiment_counts["Neutral"] / total_tweets) * 100
 
-                total_tweets = len(df)
-                vader_positive_percentage = (df[df['vader_sentiment_label'] == 'positive'].shape[0] / total_tweets) * 100
-                vader_negative_percentage = (df[df['vader_sentiment_label'] == 'negative'].shape[0] / total_tweets) * 100
-                vader_neutral_percentage = (df[df['vader_sentiment_label'] == 'neutral'].shape[0] / total_tweets) * 100
-                st.write("Sentiment Analysis Results:")
+                    total_tweets = len(df)
+                    vader_positive_percentage = (df[df['vader_sentiment_label'] == 'positive'].shape[0] / total_tweets) * 100
+                    vader_negative_percentage = (df[df['vader_sentiment_label'] == 'negative'].shape[0] / total_tweets) * 100
+                    vader_neutral_percentage = (df[df['vader_sentiment_label'] == 'neutral'].shape[0] / total_tweets) * 100
+                    st.write("Sentiment Analysis Results:")
 
-                # Display individual progress bars for positive, negative, and neutral
-                st.write("Progress by Sentiment:")
-                st.write("Positive Percentage: {:.2f}%".format(vader_positive_percentage))
-                st.progress(vader_positive_percentage / 100)
-                st.write("Negative Percentage: {:.2f}%".format(vader_negative_percentage))
-                st.progress(vader_negative_percentage / 100)
-                st.write("Neutral Percentage: {:.2f}%".format(vader_neutral_percentage))
-                st.progress(vader_neutral_percentage / 100)
-                st.dataframe(df, use_container_width=True)
+                    # Display individual progress bars for positive, negative, and neutral
+                    st.write("Progress by Sentiment:")
+                    st.write("Positive Percentage: {:.2f}%".format(vader_positive_percentage))
+                    st.progress(vader_positive_percentage / 100)
+                    st.write("Negative Percentage: {:.2f}%".format(vader_negative_percentage))
+                    st.progress(vader_negative_percentage / 100)
+                    st.write("Neutral Percentage: {:.2f}%".format(vader_neutral_percentage))
+                    st.progress(vader_neutral_percentage / 100)
+                    st.dataframe(df, use_container_width=True)
             return df
 
 
