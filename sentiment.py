@@ -350,6 +350,29 @@ def visualize(df):
             # Convert sentiment labels to numerical values
             y_numerical = label_binarize(y_test, classes=[0, 1, 2])
 
+            # Print the evaluation metrics for the dataset.
+            classification_rep = classification_report(y_test, y_pred)
+            st.write("Classification Report:")
+            st.text(classification_rep)
+
+            # Compute and plot the Confusion matrix
+            cf_matrix = confusion_matrix(y_test, y_pred)
+            categories = ['Positive', 'Negative', 'Neutral']
+            group_percentages = ['{0:.2%}'.format(value) for value in cf_matrix.flatten() / np.sum(cf_matrix)]
+            group_names = ['TPpos', 'Eneg', 'Eneu', 'Epos', 'TPneg', 'Eneu', 'Epos', 'Eneg', 'TPneu']
+            labels = [f'{v1}\n{v2}' for v1, v2 in zip(group_names, group_percentages)]
+            labels = np.asarray(labels).reshape(3, 3)
+            
+            # Display the Confusion Matrix
+            st.write("Confusion Matrix:")
+            plt.figure(figsize=(8, 6))
+            sns.heatmap(cf_matrix, annot=labels, fmt='', cmap="Blues", cbar=False,
+                        xticklabels=categories, yticklabels=categories)
+            plt.xlabel("Predicted values", fontdict={'size':14}, labelpad=10)
+            plt.ylabel("Actual values", fontdict={'size':14}, labelpad=10)
+            plt.title("Confusion Matrix", fontdict={'size':18}, pad=20)
+            st.pyplot(plt)
+
             # Compute ROC curve and ROC area for each class
             fpr = dict()
             tpr = dict()
@@ -374,29 +397,6 @@ def visualize(df):
             plt.grid(True)
             
             # Display the ROC curve plot
-            st.pyplot(plt)
-
-            # Print the evaluation metrics for the dataset.
-            classification_rep = classification_report(y_test, y_pred)
-            st.write("Classification Report:")
-            st.text(classification_rep)
-
-            # Compute and plot the Confusion matrix
-            cf_matrix = confusion_matrix(y_test, y_pred)
-            categories = ['Positive', 'Negative', 'Neutral']
-            group_percentages = ['{0:.2%}'.format(value) for value in cf_matrix.flatten() / np.sum(cf_matrix)]
-            group_names = ['TPpos', 'Eneg', 'Eneu', 'Epos', 'TPneg', 'Eneu', 'Epos', 'Eneg', 'TPneu']
-            labels = [f'{v1}\n{v2}' for v1, v2 in zip(group_names, group_percentages)]
-            labels = np.asarray(labels).reshape(3, 3)
-            
-            # Display the Confusion Matrix
-            st.write("Confusion Matrix:")
-            plt.figure(figsize=(8, 6))
-            sns.heatmap(cf_matrix, annot=labels, fmt='', cmap="Blues", cbar=False,
-                        xticklabels=categories, yticklabels=categories)
-            plt.xlabel("Predicted values", fontdict={'size':14}, labelpad=10)
-            plt.ylabel("Actual values", fontdict={'size':14}, labelpad=10)
-            plt.title("Confusion Matrix", fontdict={'size':18}, pad=20)
             st.pyplot(plt)
              
         # Create a Best Bernoulli Naive Bayes classifier
