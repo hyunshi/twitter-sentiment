@@ -31,8 +31,6 @@ from gensim.models import Word2Vec
 
 nltk.download('vader_lexicon')
 
-
-
 # Define the sid variable (SentimentIntensityAnalyzer) in the global scope
 sid = SentimentIntensityAnalyzer()
 
@@ -65,7 +63,7 @@ def Home():
 
         # Data cleaning and sentiment analysis code
         # convert all tweet into lowercase
-        df['tweets'] = df['tweets'].str.lower()
+        df['tweets'] = df['tweets'].astype(str).str.lower()
 
         # Removing Twitter Handles(@User)
         def remove_users(tweets):
