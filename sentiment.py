@@ -28,6 +28,9 @@ from wordcloud import WordCloud
 from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV
 
+nltk.download('vader_lexicon')
+
+
 
 # Define the sid variable (SentimentIntensityAnalyzer) in the global scope
 sid = SentimentIntensityAnalyzer()
