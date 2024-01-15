@@ -230,34 +230,26 @@ def Home():
 
 def visualize(df):
 
-    # Training Word2Vec model
-    tokenized_tweets = df['tweets'].map(lambda x: str(x).split())
-    word2vec_model = Word2Vec(sentences=tokenized_tweets, vector_size=100, window=5, min_count=1, workers=4)
+    # Separate positive and negative tweets
+    positive_tweets = df[df['vader_sentiment_label'] == 'positive']['tweets'].tolist()
+    negative_tweets = df[df['vader_sentiment_label'] == 'negative']['tweets'].tolist()
 
-    # Function to find similar words using Word2Vec embeddings
-    def find_similar_words(word, topn=5):
-        similar_words = word2vec_model.wv.most_similar(word, topn=topn)
-        return [word for word, _ in similar_words]
-    
-    # Positive and negative words from your sentiment analysis
-    positive_word = 'malaysia'
-    negative_word = 'lose'
-    
-    # Find similar words for positive and negative words
-    similar_positive_words = find_similar_words(positive_word)
-    similar_negative_words = find_similar_words(negative_word)
-    
-    # Create WordCloud for similar positive words
-    st.write("WordCloud for Words Similar to Positive Words:")
-    wordcloud_positive_similar = WordCloud(width=400, height=400, background_color='black').generate(' '.join(similar_positive_words))
-    image_positive_similar = wordcloud_positive_similar.to_image()
-    st.image(image_positive_similar, caption='Similar to Positive Words WordCloud', use_column_width=True)
-    
-    # Create WordCloud for similar negative words
-    st.write("WordCloud for Words Similar to Negative Words:")
-    wordcloud_negative_similar = WordCloud(width=400, height=400, background_color='black').generate(' '.join(similar_negative_words))
-    image_negative_similar = wordcloud_negative_similar.to_image()
-    st.image(image_negative_similar, caption='Similar to Negative Words WordCloud', use_column_width=True)
+    # Flatten the list of lists
+    flat_positive_tweets = [item for sublist in positive_tweets for item in sublist]
+    flat_negative_tweets = [item for sublist in negative_tweets for item in sublist]
+
+    # Create WordCloud for positive words
+    st.write("WordCloud for Positive Words:")
+    wordcloud_positive = WordCloud(width=400, height=400, background_color='black').generate(' '.join(flat_positive_tweets))
+    image_positive = wordcloud_positive.to_image()
+    st.image(image_positive, caption='Positive Words WordCloud', use_column_width=True)
+
+    # Create WordCloud for negative words
+    st.write("WordCloud for Negative Words:")
+    wordcloud_negative = WordCloud(width=400, height=400, background_color='black').generate(' '.join(flat_negative_tweets))
+    image_negative = wordcloud_negative.to_image()
+    st.image(image_negative, caption='Negative Words WordCloud', use_column_width=True)
+
 
     def tune_hyperparameters_bnb(X_train, y_train):
         # Define the parameter grid for Bernoulli Naive Bayes
