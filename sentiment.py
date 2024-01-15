@@ -288,17 +288,21 @@ def visualize(df):
     y = df['vader_sentiment_label']
 
     # Convert sentiment labels to numerical values
-    y_numerical = y.map({'positive': 0, 'negative':1, 'neutral':2})
+    y_numerical = y.map({'positive': 0, 'negative':1})
 
-    # Split the data into training and testing sets
-    X_train, X_test, y_train, y_test = train_test_split(X, y_numerical, test_size=0.2, random_state=42)
+    # Apply SMOTE to balance the classes
+    smote = SMOTE(random_state=42)
+    X_resampled, y_resampled = smote.fit_resample(X, y_numerical)
+    
+    # Split the resampled data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.2, random_state=42)
 
     def model_Evaluate(model):
         # Predict values for Test dataset
         y_pred = model.predict(X_test)
 
         # Convert sentiment labels to numerical values
-        y_numerical = label_binarize(y_test, classes=[0, 1, 2])
+        y_numerical = label_binarize(y_test, classes=[0, 1)
 
         # Print the evaluation metrics for the dataset.
         classification_rep = classification_report(y_test, y_pred)
