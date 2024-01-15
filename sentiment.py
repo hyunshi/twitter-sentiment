@@ -233,15 +233,15 @@ def visualize(df):
     # Training Word2Vec model
     tokenized_tweets = df['tweets'].map(lambda x: str(x).split())
     word2vec_model = Word2Vec(sentences=tokenized_tweets, vector_size=100, window=5, min_count=1, workers=4)
-    st.write("Vocabulary keys in the Word2Vec model:", list(word2vec_model.wv.key_to_index.keys()))
+
     # Function to find similar words using Word2Vec embeddings
     def find_similar_words(word, topn=5):
         similar_words = word2vec_model.wv.most_similar(word, topn=topn)
         return [word for word, _ in similar_words]
     
     # Positive and negative words from your sentiment analysis
-    positive_word = 'win'  # replace with an actual positive word from your data
-    negative_word = 'lose'  # replace with an actual negative word from your data
+    positive_word = 'malaysia'
+    negative_word = 'lose'
     
     # Find similar words for positive and negative words
     similar_positive_words = find_similar_words(positive_word)
