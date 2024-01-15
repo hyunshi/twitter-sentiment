@@ -333,7 +333,7 @@ def visualize(df):
         roc_auc = dict()
     
         for i in range(2):
-            fpr[i], tpr[i], _ = roc_curve(y_numerical[:, i], model.predict_proba(X_test)[:, i])
+            fpr[i], tpr[i], _ = roc_curve(y_numerical[:, i], model.decision_function(X_test))
             roc_auc[i] = auc(fpr[i], tpr[i])
     
         # Display the ROC curve
