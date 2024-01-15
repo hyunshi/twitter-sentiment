@@ -281,15 +281,15 @@ def visualize(df):
 
         return grid_search.best_estimator_
     
-    def tune_hyperparameters_mnb(X_train, y_train):
-        # Define the parameter grid for Multinomial Naive Bayes
-        param_grid = {'alpha': [0.1, 0.5, 1.0, 1.5, 2.0]}
+    def tune_hyperparameters_svm(X_train, y_train):
+        # Define the parameter grid for the SVM model
+        param_grid = {'C': [0.1, 1, 10, 100], 'gamma': [1, 0.1, 0.01, 0.001], 'kernel': ['rbf', 'linear']}
     
-        # Create the Multinomial Naive Bayes classifier
-        mnb_model = MultinomialNB()
+        # Create the SVM classifier
+        svm_model = SVC()
     
         # Instantiate the GridSearchCV object
-        grid_search = GridSearchCV(estimator=mnb_model, param_grid=param_grid, scoring='accuracy', cv=5)
+        grid_search = GridSearchCV(estimator=svm_model, param_grid=param_grid, scoring='accuracy', cv=5)
     
         # Fit the GridSearchCV to the data
         grid_search.fit(X_train, y_train)
@@ -374,91 +374,10 @@ def visualize(df):
     st.write(f"Mean Accuracy: {np.mean(cv_scores)}")
     st.write(f"Standard Deviation: {np.std(cv_scores)}")
 
-    # Create a Best Multinomial Naive Bayes classifier
-    best_mnb_model = tune_hyperparameters_mnb(X_train, y_train)
-    st.subheader("Evaluation for Multinomial Naive Bayes Model:")
-    model_Evaluate(best_mnb_model)
-    
     st.subheader("Evaluation for Bernoulli Naive Bayes Model:")
     model_Evaluate(best_bnb_model)
     y_pred_original = best_bnb_model.predict(X_test)
 
-
-    # Define a function to tune the hyperparameters of the SVM model
-    def tune_hyperparameters_svm(X_train, y_train):
-        # Define the parameter grid for the SVM model
-        param_grid = {'C': [0.1, 1, 10, 100], 'gamma': [1, 0.1, 0.01, 0.001], 'kernel': ['rbf', 'linear']}
-    
-        # Create the SVM classifier
-        svm_model = SVC()
-    
-        # Instantiate the GridSearchCV object
-        grid_search = GridSearchCV(estimator=svm_model, param_grid=param_grid, scoring='accuracy', cv=5)
-    
-        # Fit the GridSearchCV to the data
-        grid_search.fit(X_train, y_train)
-    
-        return grid_search.best_estimator_
-    
-    # Define a function to evaluate the SVM model
-    def model_Evaluate_svm(model):
-        # Predict values for Test dataset
-        y_pred = model.predict(X_test)
-    
-        # Convert sentiment labels to numerical values
-        y_numerical = label_binarize(y_test, classes=['positive', 'negative'])
-    
-        # Print the evaluation metrics for the dataset.
-        classification_rep = classification_report(y_test, y_pred)
-        st.write("Classification Report:")
-        st.text(classification_rep)
-    
-        # Compute and plot the Confusion matrix
-        cf_matrix = confusion_matrix(y_test, y_pred)
-        categories = ['Positive', 'Negative']
-        group_percentages = ['{0:.2%}'.format(value) for value in cf_matrix.flatten() / np.sum(cf_matrix)]
-        group_names = ['True Positive', 'False Positive', 'False Negative', 'True Negative']
-        labels = [f'{v1}\n{v2}' for v1, v2 in zip(group_names, group_percentages)]
-        labels = np.asarray(labels).reshape(len(categories), len(categories))
-    
-        # Display the Confusion Matrix
-        st.write("Confusion Matrix:")
-        plt.figure(figsize=(8, 6))
-        sns.heatmap(cf_matrix, annot=labels, fmt='', cmap="Blues", cbar=False,
-                    xticklabels=categories, yticklabels=categories)
-        plt.xlabel("Predicted values", fontdict={'size':14}, labelpad=10)
-        plt.ylabel("Actual values", fontdict={'size':14}, labelpad=10)
-        plt.title("Confusion Matrix", fontdict={'size':18}, pad=20)
-        st.pyplot(plt)
-    
-        # Compute and plot the ROC-AUC curve for positive class
-        proba_positive_class = model.predict_proba(X_test)[:, 1]
-        fpr_positive, tpr_positive, thresholds_positive = roc_curve(y_test, proba_positive_class, pos_label=1)
-    
-        # Compute and plot the ROC-AUC curve for negative class
-        proba_negative_class = model.predict_proba(X_test)[:, 0]
-        fpr_negative, tpr_negative, thresholds_negative = roc_curve(y_test, proba_negative_class, pos_label=0)
-    
-        # Display the ROC-AUC Curve
-        st.write("ROC-AUC Curve:")
-        plt.figure(figsize=(8, 6))
-    
-        # Plot the ROC curve for the positive class
-        plt.plot(fpr_positive, tpr_positive, color='darkorange', lw=2, label='ROC curve (area = {:.2f}) for Positive Class'.format(auc(fpr_positive, tpr_positive)))
-    
-        # Plot the ROC curve for the negative class
-        plt.plot(fpr_negative, tpr_negative, color='navy', lw=2, linestyle='--', label='ROC curve (area = {:.2f}) for Negative Class'.format(auc(fpr_negative, tpr_negative)))
-    
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
-        plt.title('Receiver Operating Characteristic (ROC) Curve')
-        plt.legend(loc='lower right')
-        st.pyplot(plt)
-    
-    # Call the evaluation function for the SVM model in the sideBar() function
-    # ...
-    
-    # Create a Best SVM classifier
     best_svm_model = tune_hyperparameters_svm(X_train, y_train)
     st.subheader("Evaluation for SVM Model:")
     model_Evaluate_svm(best_svm_model)
