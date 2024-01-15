@@ -28,7 +28,6 @@ from wordcloud import WordCloud
 from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV
 from gensim.models import Word2Vec
-from skmultiflow.metrics import flatten_samples
 
 nltk.download('vader_lexicon')
 
