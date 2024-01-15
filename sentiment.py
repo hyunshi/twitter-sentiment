@@ -19,7 +19,7 @@ from imblearn.over_sampling import SMOTE
 from streamlit_option_menu import option_menu
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics import classification_report, confusion_matrix, roc_curve, auc
+from sklearn.metrics import classification_report, confusion_matrix, roc_curve, auc, roc_auc_score
 from sklearn.naive_bayes import MultinomialNB, BernoulliNB, GaussianNB
 from sklearn.preprocessing import label_binarize
 from PIL import Image
@@ -326,18 +326,21 @@ def visualize(df):
         plt.ylabel("Actual values", fontdict={'size':14}, labelpad=10)
         plt.title("Confusion Matrix", fontdict={'size':18}, pad=20)
         st.pyplot(plt)
-
-        # Compute and plot the Precision-Recall curve
-        precision, recall, _ = precision_recall_curve(y_numerical[:, 1], model.decision_function(X_test))
-        average_precision = average_precision_score(y_numerical[:, 1], model.decision_function(X_test))
+        
+        # Compute and plot the ROC-AUC curve
+        proba_positive_class = model.predict_proba(X_test)[:, 1]
+        fpr, tpr, thresholds = roc_curve(y_numerical[:, 1], proba_positive_class)
+        roc_auc = auc(fpr, tpr)
     
-        st.write("Precision-Recall Curve:")
+        # Display the ROC-AUC Curve
+        st.write("ROC-AUC Curve:")
         plt.figure(figsize=(8, 6))
-        plt.step(recall, precision, color='b', alpha=0.2, where='post')
-        plt.fill_between(recall, precision, step='post', alpha=0.2, color='b')
-        plt.xlabel('Recall')
-        plt.ylabel('Precision')
-        plt.title('Precision-Recall Curve (AUC = {:.2f})'.format(average_precision))
+        plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = {:.2f})'.format(roc_auc))
+        plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
+        plt.title('Receiver Operating Characteristic (ROC) Curve')
+        plt.legend(loc='lower right')
         st.pyplot(plt)
          
     # Create a Best Bernoulli Naive Bayes classifier
