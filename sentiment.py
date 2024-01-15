@@ -28,6 +28,7 @@ from wordcloud import WordCloud
 from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV
 from gensim.models import Word2Vec
+from skmultiflow.metrics import flatten_samples
 
 nltk.download('vader_lexicon')
 
@@ -302,7 +303,7 @@ def visualize(df):
         y_pred = model.predict(X_test)
 
         # Convert sentiment labels to numerical values
-        y_numerical = label_binarize(y_test, classes=[0, 1])
+        y_numerical = label_binarize(y_test, classes=['positive', 'negative'])
 
         # Print the evaluation metrics for the dataset.
         classification_rep = classification_report(y_test, y_pred)
