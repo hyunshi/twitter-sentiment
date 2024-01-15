@@ -239,7 +239,8 @@ def Home():
 def visualize(df):
     # Tokenize and prepare data for Word2Vec
     tokenized_tweets = df['tweets'].apply(lambda x: x.split() if isinstance(x, str) else [])
-    model_w2v = Word2Vec(sentences=tokenized_tweets, vector_size=100, window=5, min_count=1, workers=4)
+    model_w2v = Word2Vec(vector_size=100, window=5, min_count=1, workers=4)
+    model_w2v.build_vocab(tokenized_tweets)
     model_w2v.train(tokenized_tweets, total_examples=model_w2v.corpus_count, epochs=10)
 
     def display_word2vec_results(model_w2v):
