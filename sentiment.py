@@ -78,7 +78,6 @@ def Home():
             return remove_no_link
 
         df['tweets'] = df['tweets'].apply(remove_links)
-        df['tweets'].tail()
 
         # Remove Punctuations, Numbers, and Special Characters
         english_punctuations = string.punctuation
@@ -89,21 +88,18 @@ def Home():
             return tweets.translate(translator)
 
         df['tweets'] = df['tweets'].apply(lambda x: cleaning_punctuations(x))
-        df['tweets'].tail()
 
         # Repeating characters
         def cleaning_repeating_char(tweets):
             return re.sub(r'(.)1+', r'1', tweets)
 
         df['tweets'] = df['tweets'].apply(lambda x: cleaning_repeating_char(x))
-        df['tweets'].tail()
 
         # Remove Number
         def cleaning_numbers(data):
             return re.sub('[0-9]+', '', data)
 
         df['tweets'] = df['tweets'].apply(lambda x: cleaning_numbers(x))
-        df['tweets'].tail()
 
         # Remove short words
         df['tweets'] = df['tweets'].apply(lambda x: ' '.join([w for w in x.split() if len(w) > 3]))
@@ -152,7 +148,6 @@ def Home():
                     tweets]
 
         df['stop_word'] = remove_stopwords(df['tweets'])
-        df.head()
 
         # Tokenize Word
         def tokenize(tweets):
@@ -160,7 +155,6 @@ def Home():
             return tokenizer.tokenize(tweets)
 
         df['tweets'] = df['tweets'].apply(tokenize).tolist()
-        df['tweets'].head()
 
         df.drop_duplicates(subset='tweets', keep='first', inplace=True)
 
@@ -237,7 +231,8 @@ def Home():
 def visualize(df):
 
     # Training Word2Vec model
-    tokenized_tweets = df['tweets'].apply(lambda x: x.split())
+    tokenized_tweets = df['tweets'].map(lambda x: str(x).split())
+    print(df['tweets'].apply(type))
     word2vec_model = Word2Vec(sentences=tokenized_tweets, vector_size=100, window=5, min_count=1, workers=4)
     
     # Function to find similar words using Word2Vec embeddings
