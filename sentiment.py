@@ -237,41 +237,7 @@ def Home():
             return df
 
 def visualize(df):
-    # Tokenize and prepare data for Word2Vec
-    tokenized_tweets = df['tweets'].apply(lambda x: x.split() if isinstance(x, str) else [])
-    model_w2v = Word2Vec(vector_size=100, window=5, min_count=1, workers=4)
-    model_w2v.build_vocab(tokenized_tweets)
-    model_w2v.train(tokenized_tweets, total_examples=model_w2v.corpus_count, epochs=10)
-
-    def display_word2vec_results(model_w2v):
-        positive_seed_words = ['happy', 'good', 'positive', 'joy', 'excellent']
-        negative_seed_words = ['sad', 'bad', 'negative', 'unhappy', 'terrible']
-    
-        def get_similar_words(seed_words):
-            similar_words = []
-            for word in seed_words:
-                if word in model_w2v.wv:
-                    similar_words.extend(model_w2v.wv.most_similar(word, topn=5))
-            return similar_words
-    
-        positive_similar_words = get_similar_words(positive_seed_words)
-        negative_similar_words = get_similar_words(negative_seed_words)
-    
-        st.subheader("Word2Vec Results:")
-        
-        st.write("Positive Seed Words:")
-        st.write(positive_seed_words)
-        st.write("Similar Words:")
-        st.write([word[0] for word in positive_similar_words])
-    
-        st.write("Negative Seed Words:")
-        st.write(negative_seed_words)
-        st.write("Similar Words:")
-        st.write([word[0] for word in negative_similar_words])
-    
-    # Call the display_word2vec_results function in your visualize function
-    display_word2vec_results(model_w2v)
-
+         
     # Filter tweets related to election, pru, and pilihanraya
     election_keywords = ['general', 'pru15', 'malaysia']
     election_related_tweets = df[df['tweets'].apply(lambda x: any(keyword in ' '.join(x) for keyword in election_keywords))]
