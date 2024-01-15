@@ -137,10 +137,10 @@ def Home():
 
         # Prepare Stop words
         stop_words = stopwords.words('english')
-        stop_words = ['from', 'https', 'twitter', 'still', "no", "nor", "aren't", 'couldn', "couldn't", 'didn',
+        stop_words = ['from', 'https', 'twitter', 'still', "nor", "aren't", 'couldn', "couldn't", 'didn',
                       "didn't", "doesn", "doesn't", "don", "don't", 'hadn', "hadn't", 'hasn', "hasn't", 'haven',
-                      "haven't", 'isn', "isn't", 'mightn', "mightn't", 'mustn', "mustn't", 'needn', "needn't", 'no',
-                      'not', "shan't", 'shan', "shan't", 'shouldn', "shouldn't", "that'll", 'wasn', "wasn't", 'weren',
+                      "haven't", 'isn', "isn't", 'mightn', "mightn't", 'mustn', "mustn't", 'needn', "needn't",
+                      "shan't", 'shan', "shan't", 'shouldn', "shouldn't", "that'll", 'wasn', "wasn't", 'weren',
                       "weren't", "won't", 'wouldn', "wouldn't"]
 
         def remove_stopwords(tweets):
