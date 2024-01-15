@@ -352,11 +352,11 @@ def visualize(df):
 
             # Compute and plot the Confusion matrix
             cf_matrix = confusion_matrix(y_test, y_pred)
-            categories = ['Positive', 'Negative', 'Neutral']
+            categories = ['Positive', 'Negative']
             group_percentages = ['{0:.2%}'.format(value) for value in cf_matrix.flatten() / np.sum(cf_matrix)]
-            group_names = ['TPpos', 'Eneg', 'Eneu', 'Epos', 'TPneg', 'Eneu', 'Epos', 'Eneg', 'TPneu']
+            group_names = ['True Positive', 'False Positive', 'False Negative', 'True Negative']
             labels = [f'{v1}\n{v2}' for v1, v2 in zip(group_names, group_percentages)]
-            labels = np.asarray(labels).reshape(3, 3)
+            labels = np.asarray(labels).reshape(len(categories), len(categories))
             
             # Display the Confusion Matrix
             st.write("Confusion Matrix:")
@@ -373,7 +373,7 @@ def visualize(df):
             tpr = dict()
             roc_auc = dict()
         
-            for i in range(3):
+            for i in range(2):
                 fpr[i], tpr[i], _ = roc_curve(y_numerical[:, i], model.predict_proba(X_test)[:, i])
                 roc_auc[i] = auc(fpr[i], tpr[i])
         
@@ -381,7 +381,7 @@ def visualize(df):
             st.write("Receiver Operating Characteristic (ROC) Curve:")
             plt.figure(figsize=(8, 6))
         
-            for i in range(3):
+            for i in range(2):
                 plt.plot(fpr[i], tpr[i], label=f'Class {i} (AUC = {roc_auc[i]:.2f})')
         
             plt.plot([0, 1], [0, 1], 'k--', color='grey', linestyle='--', label='Random')
