@@ -29,9 +29,6 @@ from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV
 from gensim.models import Word2Vec
 
-import optuna
-from sklearn.pipeline import Pipeline
-
 nltk.download('vader_lexicon')
 
 # Define the sid variable (SentimentIntensityAnalyzer) in the global scope
