@@ -329,20 +329,19 @@ def visualize(df):
         
         # Compute and plot the ROC-AUC curve
         proba_positive_class = model.predict_proba(X_test)[:, 1]
-        fpr, tpr, thresholds = roc_curve(y_numerical[:, 1].reshape(-1, 1), proba_positive_class)
-        roc_auc = auc(fpr, tpr)
-    
+        fpr, tpr, thresholds = roc_curve(y_test, proba_positive_class, pos_label=1) # Update pos_label to 1 for the "Positive" class
+        
         # Display the ROC-AUC Curve
         st.write("ROC-AUC Curve:")
         plt.figure(figsize=(8, 6))
-        plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = {:.2f})'.format(roc_auc))
+        plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = {:.2f})'.format(auc(fpr, tpr)))
         plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
         plt.xlabel('False Positive Rate')
         plt.ylabel('True Positive Rate')
         plt.title('Receiver Operating Characteristic (ROC) Curve')
         plt.legend(loc='lower right')
         st.pyplot(plt)
-         
+                 
     # Create a Best Bernoulli Naive Bayes classifier
     best_bnb_model = tune_hyperparameters_bnb(X_train, y_train)
     cv_scores = cross_val_score(best_bnb_model, X_train, y_train, cv=5, scoring='accuracy')
