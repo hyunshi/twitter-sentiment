@@ -229,12 +229,12 @@ def Home():
             return df
 
 def visualize(df):
-    st.write(f"Total number of positive tweets: {positive_count}")
-    st.write(f"Total number of negative tweets: {negative_count}")
-
     # Calculate the number of positive and negative tweets
     positive_count = df[df['vader_sentiment_label'] == 'positive'].shape[0]
     negative_count = df[df['vader_sentiment_label'] == 'negative'].shape[0]
+
+    st.write(f"Total number of positive tweets: {positive_count}")
+    st.write(f"Total number of negative tweets: {negative_count}")
 
     # Create a bar chart showing the number of positive and negative tweets
     st.write("Number of Positive and Negative Tweets:")
