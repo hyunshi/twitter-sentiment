@@ -288,7 +288,7 @@ def visualize(df):
     y = df['vader_sentiment_label']
 
     # Convert sentiment labels to numerical values
-    sampling_strategy = {0: desired_number_of_samples_for_class_0, 1: desired_number_of_samples_for_class_1}
+    y_numerical = y.map({'positive': 0, 'negative': 1})
 
     # Apply SMOTE to balance the classes
     smote = SMOTE(random_state=42)
