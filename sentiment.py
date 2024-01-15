@@ -26,7 +26,8 @@ from PIL import Image
 from tqdm import tqdm
 from wordcloud import WordCloud
 from sklearn.svm import SVC
-from sklearn.model_selection import GridSearchCV
+from scipy.stats import uniform
+from sklearn.model_selection import RandomizedSearchCV
 from gensim.models import Word2Vec
 
 nltk.download('vader_lexicon')
@@ -253,34 +254,33 @@ def visualize(df):
 
     def tune_hyperparameters_bnb(X_train, y_train):
         # Define the parameter grid for Bernoulli Naive Bayes
-        param_grid = {'alpha': [0.1, 0.5, 1.0, 1.5, 2.0]}
+        param_dist = {'alpha': uniform(0.01, 2.0)}
 
         # Create the Bernoulli Naive Bayes classifier
         bnb_model = BernoulliNB()
 
         # Instantiate the GridSearchCV object
-        grid_search = GridSearchCV(estimator=bnb_model, param_grid=param_grid, scoring='accuracy', cv=5)
+        random_search = RandomizedSearchCV(estimator=bnb_model, param_distributions=param_dist, scoring='accuracy', cv=5, n_iter=10)
 
         # Fit the GridSearchCV to the data
-        grid_search.fit(X_train, y_train)
+        random_search.fit(X_train, y_train)
 
-        return grid_search.best_estimator_
+        return random_search.best_estimator_
     
     def tune_hyperparameters_mnb(X_train, y_train):
         # Define the parameter grid for Multinomial Naive Bayes
-        param_grid = {'alpha': [0.1, 0.5, 1.0, 1.5, 2.0]}
-    
+        param_dist = {'alpha': uniform(0.01, 2.0)}
+
         # Create the Multinomial Naive Bayes classifier
         mnb_model = MultinomialNB()
     
-        # Instantiate the GridSearchCV object
-        grid_search = GridSearchCV(estimator=mnb_model, param_grid=param_grid, scoring='accuracy', cv=5)
+        # Instantiate the RandomizedSearchCV object
+        random_search = RandomizedSearchCV(estimator=mnb_model, param_distributions=param_dist, scoring='accuracy', cv=5, n_iter=10)
     
-        # Fit the GridSearchCV to the data
-        grid_search.fit(X_train, y_train)
-    
-        return grid_search.best_estimator_
+        # Fit the RandomizedSearchCV to the data
+        random_search.fit(X_train, y_train)
 
+    return random_search.best_estimator_
     vectorizer = TfidfVectorizer(max_features=5000000, stop_words='english', norm='l2', sublinear_tf=True)
 
     # Convert the list of arrays to a 2D NumPy array
