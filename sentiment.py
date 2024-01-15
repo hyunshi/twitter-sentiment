@@ -240,8 +240,8 @@ def visualize(df):
         return [word for word, _ in similar_words]
     
     # Positive and negative words from your sentiment analysis
-    positive_word = 'good'  # replace with an actual positive word from your data
-    negative_word = 'hate'  # replace with an actual negative word from your data
+    positive_word = 'win'  # replace with an actual positive word from your data
+    negative_word = 'lose'  # replace with an actual negative word from your data
     
     # Find similar words for positive and negative words
     similar_positive_words = find_similar_words(positive_word)
