@@ -327,30 +327,17 @@ def visualize(df):
         plt.title("Confusion Matrix", fontdict={'size':18}, pad=20)
         st.pyplot(plt)
 
-        # Compute ROC curve and ROC area for each class
-        fpr = dict()
-        tpr = dict()
-        roc_auc = dict()
+        # Compute and plot the Precision-Recall curve
+        precision, recall, _ = precision_recall_curve(y_numerical[:, 1], model.decision_function(X_test))
+        average_precision = average_precision_score(y_numerical[:, 1], model.decision_function(X_test))
     
-        for i in range(2):
-            fpr[i], tpr[i], _ = roc_curve(y_numerical[:, i], model.decision_function(X_test))
-            roc_auc[i] = auc(fpr[i], tpr[i])
-    
-        # Display the ROC curve
-        st.write("Receiver Operating Characteristic (ROC) Curve:")
+        st.write("Precision-Recall Curve:")
         plt.figure(figsize=(8, 6))
-    
-        for i in range(2):
-            plt.plot(fpr[i], tpr[i], label=f'Class {i} (AUC = {roc_auc[i]:.2f})')
-    
-        plt.plot([0, 1], [0, 1], 'k--', color='grey', linestyle='--', label='Random')
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
-        plt.title('ROC Curve')
-        plt.legend(loc='lower right')
-        plt.grid(True)
-        
-        # Display the ROC curve plot
+        plt.step(recall, precision, color='b', alpha=0.2, where='post')
+        plt.fill_between(recall, precision, step='post', alpha=0.2, color='b')
+        plt.xlabel('Recall')
+        plt.ylabel('Precision')
+        plt.title('Precision-Recall Curve (AUC = {:.2f})'.format(average_precision))
         st.pyplot(plt)
          
     # Create a Best Bernoulli Naive Bayes classifier
