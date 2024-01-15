@@ -168,10 +168,7 @@ def Home():
         # Initialize sentiment counts
         sentiment_counts = {"Positive": 0, "Negative": 0, "Neutral": 0}
 
-        # Set the threshold for classifying sentiment as neutral
-        threshold = 0.05
-
-        def calculate_vader_sentiment(tweet_list, threshold):
+        def calculate_vader_sentiment(tweet_list):
             sentiments = []
         
             for tweet in tweet_list:
@@ -181,20 +178,16 @@ def Home():
                 sentiment_scores = sid.polarity_scores(text)
                 compound_score = sentiment_scores['compound']
         
-                if compound_score >= threshold:
+                if compound_score >= 0.05:
                     sentiments.append('positive')
-                elif compound_score <= -threshold:
+                elif compound_score <= -0.05:
                     sentiments.append('negative')
-                else:
-                    sentiments.append('neutral')
-        
+            
             return sentiments
 
-
         # Apply the modified function to the 'tweets' column
-        df['vader_sentiment_label'] = calculate_vader_sentiment(df['tweets'], threshold)
+        df['vader_sentiment_label'] = calculate_vader_sentiment(df['tweets'])
         df['vader_compound_score'] = df['tweets'].apply(lambda x: sid.polarity_scores(' '.join(x))['compound'])
-
 
         # Calculate percentages
         if df is not None:
