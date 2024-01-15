@@ -229,16 +229,21 @@ def Home():
             return df
 
 def visualize(df):
+    st.write(f"Total number of positive tweets: {positive_count}")
+    st.write(f"Total number of negative tweets: {negative_count}")
 
-    # Calculate the total number of positive and negative tweets
-    tweet_counts = df['vader_sentiment_label'].value_counts()
+    # Calculate the number of positive and negative tweets
+    positive_count = df[df['vader_sentiment_label'] == 'positive'].shape[0]
+    negative_count = df[df['vader_sentiment_label'] == 'negative'].shape[0]
 
-    # Create a bar plot of the tweet counts
-    plt.bar(tweet_counts.index, tweet_counts.values)
-    plt.title('Total Number of Positive and Negative Tweets')
-    plt.xlabel('Sentiment Label')
-    plt.ylabel('Count')
-    plt.show()
+    # Create a bar chart showing the number of positive and negative tweets
+    st.write("Number of Positive and Negative Tweets:")
+    fig, ax = plt.subplots()
+    ax.bar(['Positive', 'Negative'], [positive_count, negative_count])
+    ax.set_xlabel("Sentiment")
+    ax.set_ylabel("Number of Tweets")
+    ax.set_title("Number of Positive and Negative Tweets")
+    st.pyplot(fig)
 
     # Separate positive and negative tweets
     positive_tweets = df[df['vader_sentiment_label'] == 'positive']['tweets'].tolist()
@@ -305,7 +310,7 @@ def visualize(df):
     X_resampled, y_resampled = smote.fit_resample(X, y_numerical)
     
     # Split the resampled data into training and testing sets
-    X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.4, random_state=42)
 
     def model_Evaluate(model):
         # Predict values for Test dataset
