@@ -329,7 +329,7 @@ def visualize(df):
         
         # Compute and plot the ROC-AUC curve
         proba_positive_class = model.predict_proba(X_test)[:, 1]
-        fpr, tpr, thresholds = roc_curve(y_numerical[:, 1], proba_positive_class)
+        fpr, tpr, thresholds = roc_curve(y_numerical[:, 1].reshape(-1, 1), proba_positive_class)
         roc_auc = auc(fpr, tpr)
     
         # Display the ROC-AUC Curve
