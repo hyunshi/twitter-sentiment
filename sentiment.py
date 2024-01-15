@@ -327,15 +327,24 @@ def visualize(df):
         plt.title("Confusion Matrix", fontdict={'size':18}, pad=20)
         st.pyplot(plt)
         
-        # Compute and plot the ROC-AUC curve
+        # Compute and plot the ROC-AUC curve for positive class
         proba_positive_class = model.predict_proba(X_test)[:, 1]
-        fpr, tpr, thresholds = roc_curve(y_test, proba_positive_class, pos_label=1) # Update pos_label to 1 for the "Positive" class
+        fpr_positive, tpr_positive, thresholds_positive = roc_curve(y_test, proba_positive_class, pos_label=1)
+        
+        # Compute and plot the ROC-AUC curve for negative class
+        proba_negative_class = model.predict_proba(X_test)[:, 0]
+        fpr_negative, tpr_negative, thresholds_negative = roc_curve(y_test, proba_negative_class, pos_label=0)
         
         # Display the ROC-AUC Curve
         st.write("ROC-AUC Curve:")
         plt.figure(figsize=(8, 6))
-        plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = {:.2f})'.format(auc(fpr, tpr)))
-        plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+        
+        # Plot the ROC curve for the positive class
+        plt.plot(fpr_positive, tpr_positive, color='darkorange', lw=2, label='ROC curve (area = {:.2f}) for Positive Class'.format(auc(fpr_positive, tpr_positive)))
+        
+        # Plot the ROC curve for the negative class
+        plt.plot(fpr_negative, tpr_negative, color='navy', lw=2, linestyle='--', label='ROC curve (area = {:.2f}) for Negative Class'.format(auc(fpr_negative, tpr_negative)))
+        
         plt.xlabel('False Positive Rate')
         plt.ylabel('True Positive Rate')
         plt.title('Receiver Operating Characteristic (ROC) Curve')
