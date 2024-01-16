@@ -362,6 +362,9 @@ def visualize(df):
         plt.legend(loc='lower right')
         st.pyplot(plt)
 
+        # Calculate True Positives (tp) and True Negatives (tn)
+        tp = cf_matrix[0, 0]  # True Positive
+        tn = cf_matrix[1, 1]  # True Negative
         # Display the bar chart for Positive and Negative classification
         st.write("Classification Results:")
         fig, ax = plt.subplots()
