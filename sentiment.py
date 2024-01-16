@@ -64,9 +64,7 @@ def Home():
         # Data cleaning and sentiment analysis code
         # convert all tweet into lowercase
         df['tweets'] = df['tweets'].astype(str).str.lower()
-        # Assuming 'attribute_to_remove' is the name of the attribute you want to remove
-        df.drop(columns=['query'], inplace=True)
-
+       
 
         # Removing Twitter Handles(@User)
         def remove_users(tweets):
@@ -160,6 +158,9 @@ def Home():
         df['tweets'] = df['tweets'].apply(tokenize).tolist()
 
         df.drop_duplicates(subset='tweets', keep='first', inplace=True)
+        # Assuming 'attribute_to_remove' is the name of the attribute you want to remove
+        df.drop(columns=['query'], inplace=True)
+
 
         # Display the count of unique rows after removing duplicates
         st.write(f"Number of unique tweets after removing duplicates: {len(df)}")
