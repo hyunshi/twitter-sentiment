@@ -174,17 +174,24 @@ def Home():
         
                 sentiment_scores = sid.polarity_scores(text)
                 compound_score = sentiment_scores['compound']
+                # Get the sentiment scores for each word
+                word_sentiments = [sid.polarity_scores(word)['compound'] for word in text.split()]
+
+                # Append the list of sentiment scores for each word to the main list
+                sentiments_list.append(word_sentiments)
         
                 if compound_score >= threshold:
                     sentiments.append('positive')
                 else:
                     sentiments.append('negative')
         
-            return sentiments
+            return sentiments, sentiments_list
             
         # Apply the modified function to the 'tweets' column
+        df['word_sentiments'] = calculate_vader_sentiment(df['tweets'])
         df['sentiment'] = calculate_vader_sentiment(df['tweets'])
         df['score'] = df['tweets'].apply(lambda x: sid.polarity_scores(' '.join(x))['compound'])
+        df.drop(columns=['query'], inplace=True)
 
         # Calculate percentages
         if df is not None:
