@@ -353,6 +353,49 @@ def visualize(df):
         plt.title('Receiver Operating Characteristic (ROC) Curve')
         plt.legend(loc='lower right')
         st.pyplot(plt)
+    def model_Evaluate_svm(model):
+        # Predict values for Test dataset
+        y_pred = model.predict(X_test)
+    
+        # Convert sentiment labels to numerical values
+        y_numerical = label_binarize(y_test, classes=['positive', 'negative'])
+    
+        # Print the evaluation metrics for the dataset.
+        classification_rep = classification_report(y_test, y_pred)
+        st.write("SVM Model Classification Report:")
+        st.text(classification_rep)
+    
+        # Compute and plot the Confusion matrix
+        cf_matrix = confusion_matrix(y_test, y_pred)
+        categories = ['Positive', 'Negative']
+        group_percentages = ['{0:.2%}'.format(value) for value in cf_matrix.flatten() / np.sum(cf_matrix)]
+        group_names = ['True Positive', 'False Positive', 'False Negative', 'True Negative']
+        labels = [f'{v1}\n{v2}' for v1, v2 in zip(group_names, group_percentages)]
+        labels = np.asarray(labels).reshape(len(categories), len(categories))
+    
+        # Display the Confusion Matrix
+        st.write("SVM Model Confusion Matrix:")
+        plt.figure(figsize=(8, 6))
+        sns.heatmap(cf_matrix, annot=labels, fmt='', cmap="Blues", cbar=False,
+                    xticklabels=categories, yticklabels=categories)
+        plt.xlabel("Predicted values", fontdict={'size':14}, labelpad=10)
+        plt.ylabel("Actual values", fontdict={'size':14}, labelpad=10)
+        plt.title("SVM Model Confusion Matrix", fontdict={'size':18}, pad=20)
+        st.pyplot(plt)
+    
+        # Compute and plot the ROC-AUC curve for positive class
+        proba_positive_class = model.decision_function(X_test)
+        fpr_positive, tpr_positive, thresholds_positive = roc_curve(y_test, proba_positive_class)
+    
+        # Display the ROC-AUC Curve for SVM Model
+        st.write("SVM Model ROC-AUC Curve:")
+        plt.figure(figsize=(8, 6))
+        plt.plot(fpr_positive, tpr_positive, color='darkorange', lw=2, label='SVM ROC curve (area = {:.2f})'.format(auc(fpr_positive, tpr_positive)))
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
+        plt.title('SVM Model Receiver Operating Characteristic (ROC) Curve')
+        plt.legend(loc='lower right')
+        st.pyplot(plt)
                  
     # Create a Best Bernoulli Naive Bayes classifier
     best_bnb_model = tune_hyperparameters_bnb(X_train, y_train)
@@ -369,7 +412,7 @@ def visualize(df):
     st.subheader("Evaluation for SVM Model:")
     svm_model = SVC(kernel='linear', C=1)
     svm_model.fit(X_train, y_train)
-    model_Evaluate(svm_model)
+    model_Evaluate_svm(svm_model)
     y_pred_original = svm_model.predict(X_test)
 
 def sideBar():
