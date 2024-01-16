@@ -287,6 +287,8 @@ def visualize(df):
     X = vectorizer.fit_transform(df['tweets'].apply(lambda x: ' '.join(x)))
     y = df['vader_sentiment_label']
 
+    num_features = X.shape[1]
+
     # Convert sentiment labels to numerical values
     y_numerical = y.map({'positive': 0, 'negative': 1})
 
@@ -296,7 +298,8 @@ def visualize(df):
     
     # Split the resampled data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.1, random_state=42)
-
+    st.write(f"Number of Features (Vocabulary Size): {num_features}")
+    
     def model_Evaluate(model):
         # Predict values for Test dataset
         y_pred = model.predict(X_test)
@@ -366,7 +369,7 @@ def visualize(df):
     st.subheader("Evaluation for SVM Model:")
     svm_model = SVC(kernel='linear', C=1)
     svm_model.fit(X_train, y_train)
-    model_Evaluate_svm(svm_model)
+    model_Evaluate(svm_model)
     y_pred_original = svm_model.predict(X_test)
 
 def sideBar():
