@@ -174,6 +174,9 @@ def Home():
         
                 sentiment_scores = sid.polarity_scores(text)
                 compound_score = sentiment_scores['compound']
+                # Calculate the VADER sentiment scores
+                word_sentiments = [(word, sid.polarity_scores(word)['compound']) for word in text.split()]
+                sentiments.append(word_sentiments)
         
                 if compound_score >= threshold:
                     sentiments.append('positive')
@@ -183,6 +186,7 @@ def Home():
             return sentiments
             
         # Apply the modified function to the 'tweets' column
+        df['word_sentiments'] = calculate_vader_sentiment(df['tweets'])
         df['sentiment'] = calculate_vader_sentiment(df['tweets'])
         df['score'] = df['tweets'].apply(lambda x: sid.polarity_scores(' '.join(x))['compound'])
         df.drop(columns=['query'], inplace=True)
