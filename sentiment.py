@@ -201,8 +201,8 @@ def Home():
                 text = ' '.join(tokens)
 
                 # Calculate the VADER sentiment label
-                vader_sentiment_label = sid.polarity_scores(text)
-                compound_score = vader_sentiment_label['compound']
+                sentiment = sid.polarity_scores(text)
+                compound_score = sentiment['compound']
 
                 if compound_score >= 0.05:
                     sentiment_counts["Positive"] += 1
@@ -232,8 +232,8 @@ def Home():
 
 def visualize(df):
     # Calculate the number of positive and negative tweets
-    positive_count = df[df['vader_sentiment_label'] == 'positive'].shape[0]
-    negative_count = df[df['vader_sentiment_label'] == 'negative'].shape[0]
+    positive_count = df[df['sentiment'] == 'positive'].shape[0]
+    negative_count = df[df['sentiment'] == 'negative'].shape[0]
 
     st.write(f"Total number of positive tweets: {positive_count}")
     st.write(f"Total number of negative tweets: {negative_count}")
@@ -248,8 +248,8 @@ def visualize(df):
     st.pyplot(fig)
 
     # Separate positive and negative tweets
-    positive_tweets = df[df['vader_sentiment_label'] == 'positive']['tweets'].tolist()
-    negative_tweets = df[df['vader_sentiment_label'] == 'negative']['tweets'].tolist()
+    positive_tweets = df[df['sentiment'] == 'positive']['tweets'].tolist()
+    negative_tweets = df[df['sentiment'] == 'negative']['tweets'].tolist()
 
     # Flatten the list of lists
     flat_positive_tweets = [item for sublist in positive_tweets for item in sublist]
@@ -287,7 +287,7 @@ def visualize(df):
 
     # Convert the list of arrays to a 2D NumPy array
     X = vectorizer.fit_transform(df['tweets'].apply(lambda x: ' '.join(x)))
-    y = df['vader_sentiment_label']
+    y = df['sentiment']
 
     num_features = X.shape[1]
 
