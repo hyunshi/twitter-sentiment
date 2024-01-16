@@ -316,10 +316,10 @@ def visualize(df):
         y_numerical = label_binarize(y_test, classes=['positive', 'negative'])
 
         # Print the evaluation metrics for the dataset.
-        classification_rep = classification_report(y_test, y_pred, output_dict=True)
+        classification_rep = classification_report(y_test, y_pred, target_names=['positive', 'negative'], output_dict=True)
         st.write("Classification Report:")
         st.text(classification_rep)
-
+    
         # Extract precision, recall, and F1-score values
         precision_positive = classification_rep['positive']['precision']
         precision_negative = classification_rep['negative']['precision']
@@ -351,7 +351,6 @@ def visualize(df):
         ax.legend()
     
         st.pyplot(fig)
-
         # Compute and plot the Confusion matrix
         cf_matrix = confusion_matrix(y_test, y_pred)
         categories = ['Positive', 'Negative']
