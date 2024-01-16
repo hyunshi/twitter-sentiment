@@ -148,7 +148,7 @@ def Home():
             return [[word for word in simple_preprocess(str(tweets)) if word not in stop_words] for tweets in
                     tweets]
 
-        df['tweets'] = remove_stopwords(df['tweets'])
+        df['stopwords'] = remove_stopwords(df['tweets'])
 
         # Tokenize Word
         def tokenize(tweets):
