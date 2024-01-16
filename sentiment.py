@@ -297,6 +297,7 @@ def visualize(df):
         return grid_search.best_estimator_
         
     vectorizer = TfidfVectorizer(max_features=5000000, stop_words='english', norm='l2', sublinear_tf=True)
+    st.write(f"Number of features: {vectorizer.get_feature_names().shape[0]}")
 
     # Convert the list of arrays to a 2D NumPy array
     X = vectorizer.fit_transform(df['tweets'].apply(lambda x: ' '.join(x)))
@@ -310,7 +311,7 @@ def visualize(df):
     X_resampled, y_resampled = smote.fit_resample(X, y_numerical)
     
     # Split the resampled data into training and testing sets
-    X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.1, random_state=42)
 
     def model_Evaluate(model):
         # Predict values for Test dataset
@@ -368,19 +369,20 @@ def visualize(df):
                  
     # Create a Best Bernoulli Naive Bayes classifier
     best_bnb_model = tune_hyperparameters_bnb(X_train, y_train)
+
+    st.subheader("Evaluation for Bernoulli Naive Bayes Model:")
     cv_scores = cross_val_score(best_bnb_model, X_train, y_train, cv=5, scoring='accuracy')
     st.write("Cross-Validation Scores:")
     st.write(cv_scores)
     st.write(f"Mean Accuracy: {np.mean(cv_scores)}")
     st.write(f"Standard Deviation: {np.std(cv_scores)}")
-
-    st.subheader("Evaluation for Bernoulli Naive Bayes Model:")
     model_Evaluate(best_bnb_model)
     y_pred_original = best_bnb_model.predict(X_test)
 
     best_svm_model = tune_hyperparameters_svm(X_train, y_train)
     st.subheader("Evaluation for SVM Model:")
     model_Evaluate_svm(best_svm_model)
+    y_pred_original = best_svm_model.predict(X_test)
 
 def sideBar():
     with st.sidebar:
