@@ -188,7 +188,7 @@ def Home():
             return sentiments, vader_scores
         
         # Apply the modified function to the 'tweets' column
-        df['sentiment'], df['vader_scores'] = zip(*calculate_vader_sentiment(df['tweets']))
+        df['sentiment'], df['vader_scores'] = calculate_vader_sentiment(df['tweets']))
         df['score'] = df['tweets'].apply(lambda x: sid.polarity_scores(' '.join(x))['compound'])
         df.drop(columns=['query'], inplace=True)
 
