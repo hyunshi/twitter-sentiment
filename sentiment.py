@@ -320,15 +320,15 @@ def visualize(df):
         st.write("Classification Report:")
         st.text(classification_rep)
     
-        # Extract precision, recall, and F1-score values
-        precision_positive = classification_rep['positive']['precision']
-        precision_negative = classification_rep['negative']['precision']
+        # Extract precision, recall, and F1-score values as percentages
+        precision_positive = classification_rep['positive']['precision'] * 100
+        precision_negative = classification_rep['negative']['precision'] * 100
     
-        recall_positive = classification_rep['positive']['recall']
-        recall_negative = classification_rep['negative']['recall']
+        recall_positive = classification_rep['positive']['recall'] * 100
+        recall_negative = classification_rep['negative']['recall'] * 100
     
-        f1_positive = classification_rep['positive']['f1-score']
-        f1_negative = classification_rep['negative']['f1-score']
+        f1_positive = classification_rep['positive']['f1-score'] * 100
+        f1_negative = classification_rep['negative']['f1-score'] * 100
     
         # Create a bar chart for precision, recall, and F1-score
         st.write("Classification Report:")
