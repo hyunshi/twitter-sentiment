@@ -158,8 +158,6 @@ def Home():
         df['tweets'] = df['tweets'].apply(tokenize).tolist()
 
         df.drop_duplicates(subset='tweets', keep='first', inplace=True)
-        df.drop(columns=['stop_word'], inplace=True)
-        df.drop(columns=['query'], inplace=True)
 
         # Display the count of unique rows after removing duplicates
         st.write(f"Number of unique tweets after removing duplicates: {len(df)}")
