@@ -296,7 +296,7 @@ def visualize(df):
     
         return grid_search.best_estimator_
         
-    vectorizer = TfidfVectorizer(max_features=5000000, stop_words='english', norm='l2', sublinear_tf=True)
+    vectorizer = TfidfVectorizer(max_features=50000, stop_words='english', norm='l2', sublinear_tf=True)
 
     # Convert the list of arrays to a 2D NumPy array
     X = vectorizer.fit_transform(df['tweets'].apply(lambda x: ' '.join(x)))
@@ -311,7 +311,6 @@ def visualize(df):
     
     # Split the resampled data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.1, random_state=42)
-    st.write(f"Number of features: {vectorizer.get_feature_names().shape[0]}")
 
     def model_Evaluate(model):
         # Predict values for Test dataset
