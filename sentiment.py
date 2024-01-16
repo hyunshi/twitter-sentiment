@@ -316,18 +316,40 @@ def visualize(df):
         y_numerical = label_binarize(y_test, classes=['positive', 'negative'])
 
         # Print the evaluation metrics for the dataset.
-        classification_rep = classification_report(y_test, y_pred)
+        classification_rep = classification_report(y_test, y_pred, output_dict=True)
         st.write("Classification Report:")
         st.text(classification_rep)
-        # Create a bar chart for the classification report
+
+        # Extract precision, recall, and F1-score values
+        precision_positive = classification_rep['positive']['precision']
+        precision_negative = classification_rep['negative']['precision']
+    
+        recall_positive = classification_rep['positive']['recall']
+        recall_negative = classification_rep['negative']['recall']
+    
+        f1_positive = classification_rep['positive']['f1-score']
+        f1_negative = classification_rep['negative']['f1-score']
+    
+        # Create a bar chart for precision, recall, and F1-score
+        st.write("Classification Report:")
         fig, ax = plt.subplots()
-        ax.bar(['Precision', 'Recall', 'F1-Score'],
-               [classification_rep.split('\n')[1].split()[1],
-                classification_rep.split('\n')[2].split()[1],
-                classification_rep.split('\n')[3].split()[1]])
-        ax.set_xlabel("Evaluation Metrics")
-        ax.set_ylabel("Score")
-        ax.set_title("Classification Report Bar Chart")
+        labels = ['Precision', 'Recall', 'F1-Score']
+        positive_values = [precision_positive, recall_positive, f1_positive]
+        negative_values = [precision_negative, recall_negative, f1_negative]
+    
+        width = 0.35  # the width of the bars
+        ind = np.arange(len(labels))  # the label locations
+    
+        ax.bar(ind - width/2, positive_values, width, label='Positive')
+        ax.bar(ind + width/2, negative_values, width, label='Negative')
+    
+        ax.set_xlabel('Metrics')
+        ax.set_ylabel('Scores')
+        ax.set_title('Precision, Recall, and F1-Score Comparison')
+        ax.set_xticks(ind)
+        ax.set_xticklabels(labels)
+        ax.legend()
+    
         st.pyplot(fig)
 
         # Compute and plot the Confusion matrix
