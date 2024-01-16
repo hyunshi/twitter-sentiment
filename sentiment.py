@@ -103,7 +103,7 @@ def Home():
         df['tweets'] = df['tweets'].apply(lambda x: cleaning_numbers(x))
 
         # Remove short words
-        df['tweets'] = df['tweets'].apply(lambda x: ' '.join([w for w in x.split() if len(w) > 2]))
+        df['tweets'] = df['tweets'].apply(lambda x: ' '.join([w for w in x.split() if len(w) > 3]))
 
         # Remove hashtag
         def remove_hashtags(tweets, pattern):
