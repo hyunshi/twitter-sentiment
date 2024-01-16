@@ -305,7 +305,7 @@ def visualize(df):
     X_resampled, y_resampled = smote.fit_resample(X, y_numerical)
     
     # Split the resampled data into training and testing sets
-    X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.4, random_state=42)
     st.write(f"Number of Features (Vocabulary Size): {num_features}")
     
     def model_Evaluate(model):
