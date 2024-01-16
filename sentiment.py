@@ -268,7 +268,7 @@ def visualize(df):
 
     def tune_hyperparameters_bnb(X_train, y_train):
         # Define the parameter grid for Bernoulli Naive Bayes
-        param_grid = {'alpha': [0.1, 0.5, 1.0, 1.5, 2.0]}
+        param_grid = {'alpha': [0.1, 0.5, 1.0]}
 
         # Create the Bernoulli Naive Bayes classifier
         bnb_model = BernoulliNB()
@@ -279,21 +279,6 @@ def visualize(df):
         # Fit the GridSearchCV to the data
         grid_search.fit(X_train, y_train)
 
-        return grid_search.best_estimator_
-    
-    def tune_hyperparameters_svm(X_train, y_train):
-        # Define the parameter grid for the SVM model
-        param_grid = {'C': [0.1, 1, 10, 100], 'gamma': [1, 0.1, 0.01, 0.001], 'kernel': ['rbf', 'linear']}
-    
-        # Create the SVM classifier
-        svm_model = SVC()
-    
-        # Instantiate the GridSearchCV object
-        grid_search = GridSearchCV(estimator=svm_model, param_grid=param_grid, scoring='accuracy', cv=5)
-    
-        # Fit the GridSearchCV to the data
-        grid_search.fit(X_train, y_train)
-    
         return grid_search.best_estimator_
         
     vectorizer = TfidfVectorizer(max_features=50000, stop_words='english', norm='l2', sublinear_tf=True)
@@ -378,10 +363,10 @@ def visualize(df):
     model_Evaluate(best_bnb_model)
     y_pred_original = best_bnb_model.predict(X_test)
 
-    best_svm_model = tune_hyperparameters_svm(X_train, y_train)
     st.subheader("Evaluation for SVM Model:")
-    model_Evaluate_svm(best_svm_model)
-    y_pred_original = best_svm_model.predict(X_test)
+    svm_model = SVC(kernel='linear', C=1)
+    svm_model.fit(X_train, y_train)
+    model_Evaluate_svm(svm_model)
 
 def sideBar():
     with st.sidebar:
