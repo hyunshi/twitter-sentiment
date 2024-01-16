@@ -317,8 +317,9 @@ def visualize(df):
 
         # Print the evaluation metrics for the dataset.
         classification_rep = classification_report(y_test, y_pred, target_names=['positive', 'negative'], output_dict=True)
+        classification_rep1 = classification_report(y_test, y_pred)
         st.write("Classification Report:")
-        st.text(classification_rep)
+        st.text(classification_rep1)
     
         # Extract precision, recall, and F1-score values as percentages
         precision_positive = classification_rep['positive']['precision'] * 100
