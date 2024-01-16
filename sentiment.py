@@ -167,6 +167,7 @@ def Home():
 
         def calculate_vader_sentiment(tweet_list, threshold=0.05):
             sentiments = []
+            sentiments_list=[]
         
             for tweet in tweet_list:
                 # Join the list of tokens into a single string
