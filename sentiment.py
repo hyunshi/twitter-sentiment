@@ -64,6 +64,9 @@ def Home():
         # Data cleaning and sentiment analysis code
         # convert all tweet into lowercase
         df['tweets'] = df['tweets'].astype(str).str.lower()
+        # Assuming 'attribute_to_remove' is the name of the attribute you want to remove
+        df.drop(columns=['query'], inplace=True)
+
 
         # Removing Twitter Handles(@User)
         def remove_users(tweets):
@@ -147,7 +150,7 @@ def Home():
             return [[word for word in simple_preprocess(str(tweets)) if word not in stop_words] for tweets in
                     tweets]
 
-        df['stop_word'] = remove_stopwords(df['tweets'])
+        df['tweets'] = remove_stopwords(df['tweets'])
 
         # Tokenize Word
         def tokenize(tweets):
@@ -182,8 +185,8 @@ def Home():
             return sentiments
             
         # Apply the modified function to the 'tweets' column
-        df['vader_sentiment_label'] = calculate_vader_sentiment(df['tweets'])
-        df['vader_compound_score'] = df['tweets'].apply(lambda x: sid.polarity_scores(' '.join(x))['compound'])
+        df['sentiment'] = calculate_vader_sentiment(df['tweets'])
+        df['score'] = df['tweets'].apply(lambda x: sid.polarity_scores(' '.join(x))['compound'])
 
         # Calculate percentages
         if df is not None:
