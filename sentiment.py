@@ -319,6 +319,16 @@ def visualize(df):
         classification_rep = classification_report(y_test, y_pred)
         st.write("Classification Report:")
         st.text(classification_rep)
+        # Create a bar chart for the classification report
+        fig, ax = plt.subplots()
+        ax.bar(['Precision', 'Recall', 'F1-Score'],
+               [classification_rep.split('\n')[1].split()[1],
+                classification_rep.split('\n')[2].split()[1],
+                classification_rep.split('\n')[3].split()[1]])
+        ax.set_xlabel("Evaluation Metrics")
+        ax.set_ylabel("Score")
+        ax.set_title("Classification Report Bar Chart")
+        st.pyplot(fig)
 
         # Compute and plot the Confusion matrix
         cf_matrix = confusion_matrix(y_test, y_pred)
@@ -361,18 +371,6 @@ def visualize(df):
         plt.title('Receiver Operating Characteristic (ROC) Curve')
         plt.legend(loc='lower right')
         st.pyplot(plt)
-
-        # Calculate True Positives (tp) and True Negatives (tn)
-        tp = cf_matrix[0, 0]  # True Positive
-        tn = cf_matrix[1, 1]  # True Negative
-        # Display the bar chart for Positive and Negative classification
-        st.write("Classification Results:")
-        fig, ax = plt.subplots()
-        ax.bar(['Positive', 'Negative'], [tp, tn], color=['green', 'red'])
-        ax.set_xlabel("Sentiment")
-        ax.set_ylabel("Number of Tweets")
-        ax.set_title("Naive Bayes Classification Results")
-        st.pyplot(fig)
         
     def model_Evaluate_svm(model):
         # Predict values for Test dataset
