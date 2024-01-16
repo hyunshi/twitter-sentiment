@@ -345,7 +345,7 @@ def visualize(df):
         ax.bar(ind + width/2, negative_values, width, label='Negative')
     
         ax.set_xlabel('Metrics')
-        ax.set_ylabel('Scores')
+        ax.set_ylabel('Percentage')
         ax.set_title('Precision, Recall, and F1-Score Comparison')
         ax.set_xticks(ind)
         ax.set_xticklabels(labels)
