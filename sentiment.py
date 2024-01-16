@@ -164,8 +164,33 @@ def Home():
 
         # Initialize sentiment counts
         sentiment_counts = {"Positive": 0, "Negative": 0}
+        def calculate_vader_scores(tweet_list):
+            word_scores = {}
+            for tweet in tweet_list:
+                # Join the list of tokens into a single string
+                text = ' '.join(tweet)
+        
+                # Calculate the VADER sentiment label and scores
+                sentiment_scores = sid.polarity_scores(text)
+                compound_score = sentiment_scores['compound']
+                positive_score = sentiment_scores['pos']
+                negative_score = sentiment_scores['neg']
+                neutral_score = sentiment_scores['neu']
+        
+                # Calculate the VADER scores for each word
+                for word in tweet:
+                    if word not in word_scores:
+                        word_scores[word] = {'compound': compound_score, 'positive': positive_score, 'negative': negative_score, 'neutral': neutral_score}
+                    else:
+                        word_scores[word]['compound'] += compound_score
+                        word_scores[word]['positive'] += positive_score
+                        word_scores[word]['negative'] += negative_score
+                        word_scores[word]['neutral'] += neutral_score
+        
+            return word_scores
 
         def calculate_vader_sentiment(tweet_list, threshold=0.05):
+            word_scores = calculate_vader_scores(tweet_list)
             sentiments = []
         
             for tweet in tweet_list:
@@ -180,11 +205,26 @@ def Home():
                 else:
                     sentiments.append('negative')
         
-            return sentiments
+            return sentiments, word_scores
             
         # Apply the modified function to the 'tweets' column
-        df['sentiment'] = calculate_vader_sentiment(df['tweets'])
-        df['score'] = df['tweets'].apply(lambda x: sid.polarity_scores(' '.join(x))['compound'])
+        # Calculate VADER sentiment and word scores
+        sentiment, word_scores = calculate_vader_sentiment(df['tweets'])
+        df['sentiment'] = sentiment
+
+        # Create a dictionary of word scores
+        word_scores_dict = {}
+        for word, scores in word_scores.items():
+            if scores['compound'] != 0:
+                if 'word_scores' not in word_scores_dict:
+                    word_scores_dict['word_scores'] = {}
+                for key, value in scores.items():
+                    if key not in word_scores_dict['word_scores']:
+                        word_scores_dict['word_scores'][key] = {}
+                    word_scores_dict['word_scores'][key][word] = value
+
+        # Add the word scores to the dataframe
+        df = pd.concat([df, pd.json_normalize(word_scores_dict).add_prefix('word_scores.')], axis=1)
         df.drop(columns=['query'], inplace=True)
 
         # Calculate percentages
