@@ -361,6 +361,16 @@ def visualize(df):
         plt.title('Receiver Operating Characteristic (ROC) Curve')
         plt.legend(loc='lower right')
         st.pyplot(plt)
+
+        # Display the bar chart for Positive and Negative classification
+        st.write("Classification Results:")
+        fig, ax = plt.subplots()
+        ax.bar(['Positive', 'Negative'], [tp, tn], color=['green', 'red'])
+        ax.set_xlabel("Sentiment")
+        ax.set_ylabel("Number of Tweets")
+        ax.set_title("Naive Bayes Classification Results")
+        st.pyplot(fig)
+        
     def model_Evaluate_svm(model):
         # Predict values for Test dataset
         y_pred = model.predict(X_test)
