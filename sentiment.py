@@ -226,6 +226,7 @@ def Home():
             st.progress(vader_positive_percentage / 100)
             st.write("Negative Percentage: {:.2f}%".format(vader_negative_percentage))
             st.progress(vader_negative_percentage / 100)
+            st.dataframe(df, use_container_width=True)
             return df
 
 def visualize(df):
