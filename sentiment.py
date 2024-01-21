@@ -65,7 +65,6 @@ def Home():
         # convert all tweet into lowercase
         df['tweets'] = df['tweets'].astype(str).str.lower()
        
-
         # Removing Twitter Handles(@User)
         def remove_users(tweets):
             remove_user = re.compile(r"@[A-Za-z0-9]+")
