@@ -68,7 +68,7 @@ def Home():
         # Add sorting dropdown
         sort_by = st.selectbox("Sort by", ['sentiment', 'score'])
         if sort_by:
-            df = df.sort_values(sort_by, ascending=False)
+            df = df.sort_values(sort_by, ascending=False
 
         # Data cleaning and sentiment analysis code
         # convert all tweet into lowercase
