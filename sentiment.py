@@ -69,136 +69,136 @@ def Home():
         sort_by = st.selectbox("Sort by", ['sentiment', 'score'])
         if sort_by:
             df = df.sort_values(sort_by, ascending=False
-
+                                
         # Data cleaning and sentiment analysis code
-        # convert all tweet into lowercase
-        df['tweets'] = df['tweets'].astype(str).str.lower()
-       
-        # Removing Twitter Handles(@User)
-        def remove_users(tweets):
-            remove_user = re.compile(r"@[A-Za-z0-9]+")
-            return remove_user.sub(r"", tweets)
-
-        df['tweets'] = df['tweets'].apply(remove_users)
-
-        # Remove links
-        def remove_links(tweets):
-            remove_no_link = re.sub(r"http\S+", "", tweets)
-            return remove_no_link
-
-        df['tweets'] = df['tweets'].apply(remove_links)
-
-        # Remove Punctuations, Numbers, and Special Characters
-        english_punctuations = string.punctuation
-        punctuations_list = english_punctuations
-
-        def cleaning_punctuations(tweets):
-            translator = str.maketrans('', '', punctuations_list)
-            return tweets.translate(translator)
-
-        df['tweets'] = df['tweets'].apply(lambda x: cleaning_punctuations(x))
-
-        # Repeating characters
-        def cleaning_repeating_char(tweets):
-            return re.sub(r'(.)1+', r'1', tweets)
-
-        df['tweets'] = df['tweets'].apply(lambda x: cleaning_repeating_char(x))
-
-        # Remove Number
-        def cleaning_numbers(data):
-            return re.sub('[0-9]+', '', data)
-
-        df['tweets'] = df['tweets'].apply(lambda x: cleaning_numbers(x))
-
-        # Remove short words
-        df['tweets'] = df['tweets'].apply(lambda x: ' '.join([w for w in x.split() if len(w) > 4]))
-
-        # Remove hashtag
-        def remove_hashtags(tweets, pattern):
-            r = re.findall(pattern, tweets)
-
-            for i in r:
-                text = re.sub(i, '', tweets)
-            return tweets
-
-        df['tweets'] = np.vectorize(remove_hashtags)(df['tweets'], "#[\W]*")
-
-        # Emoji removal
-        def remove_emojis(string):
-            remove_emoji = re.compile(
-                "["u"\U0001F600-\U0001F64F"  # emoticons
-                u"\U0001F300-\U0001F5FF"  # symbols & pictographs
-                u"\U0001F680-\U0001F6FF"  # transport & map symbols
-                u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
-                "]+", flags=re.UNICODE)
-            return remove_emoji.sub(r'', string).encode("utf-8").decode("utf-8")
-
-        df['tweets'] = df['tweets'].apply(remove_emojis)
-
-        # Lemmatization
-        lemmatizer = WordNetLemmatizer()
-        wordnet_map = {"N": wordnet.NOUN, "V": wordnet.VERB, "R": wordnet.ADV}
-
-        def lemmatize_words(tweets):
-            pos_tagged_text = nltk.pos_tag(tweets.split())
-            return " ".join([lemmatizer.lemmatize(word, wordnet_map.get(pos[0], wordnet.NOUN)) for word, pos in
-                             pos_tagged_text])
-
-        # Prepare Stop words
-        stop_words = stopwords.words('english')
-        stop_words = ['from', 'https', 'twitter', 'still', "nor", "aren't", 'couldn', "couldn't", 'didn',
-                      "didn't", "doesn", "doesn't", "don", "don't", 'hadn', "hadn't", 'hasn', "hasn't", 'haven',
-                      "haven't", 'isn', "isn't", 'mightn', "mightn't", 'mustn', "mustn't", 'needn', "needn't",
-                      "shan't", 'shan', "shan't", 'shouldn', "shouldn't", "that'll", 'wasn', "wasn't", 'weren',
-                      "weren't", "won't", 'wouldn', "wouldn't"]
-
-        def remove_stopwords(tweets):
-            return [[word for word in simple_preprocess(str(tweets)) if word not in stop_words] for tweets in
-                    tweets]
-
-        df['stopwords'] = remove_stopwords(df['tweets'])
-
-        # Tokenize Word
-        def tokenize(tweets):
-            tokenizer = RegexpTokenizer(r'\w+')
-            return tokenizer.tokenize(tweets)
-
-        df['tweets'] = df['tweets'].apply(tokenize).tolist()
-
-        df.drop_duplicates(subset='tweets', keep='first', inplace=True)
-
-        # Display the count of unique rows after removing duplicates
-        st.write(f"Number of unique tweets after removing duplicates: {len(df)}")
-
-        # Initialize sentiment counts
-        sentiment_counts = {"Positive": 0, "Negative": 0}
-
-        def calculate_vader_sentiment(tweet_list, threshold=0.05):
-            sentiments = []
-            vader_scores = []
-        
-            for tweet in tweet_list:
-                # Join the list of tokens into a single string
-                text = ' '.join(tweet)
-        
-                sentiment_scores = sid.polarity_scores(text)
-                compound_score = sentiment_scores['compound']
-        
-                if compound_score >= threshold:
-                    sentiments.append('positive')
-                else:
-                    sentiments.append('negative')
-        
-                # Append the VADER score for each word in the tweet
-                word_scores = [sid.polarity_scores(word)['compound'] for word in tweet]
-                vader_scores.append(word_scores)
-        
-            return sentiments, vader_scores
-        
-        # Apply the modified function to the 'tweets' column
-        df['sentiment'], df['vader_scores'] = calculate_vader_sentiment(df['tweets'])
-        df['score'] = df['tweets'].apply(lambda x: sid.polarity_scores(' '.join(x))['compound'])
-        df.drop(columns=['query'], inplace=True)
+            # convert all tweet into lowercase
+            df['tweets'] = df['tweets'].astype(str).str.lower()
+           
+            # Removing Twitter Handles(@User)
+            def remove_users(tweets):
+                remove_user = re.compile(r"@[A-Za-z0-9]+")
+                return remove_user.sub(r"", tweets)
+    
+            df['tweets'] = df['tweets'].apply(remove_users)
+    
+            # Remove links
+            def remove_links(tweets):
+                remove_no_link = re.sub(r"http\S+", "", tweets)
+                return remove_no_link
+    
+            df['tweets'] = df['tweets'].apply(remove_links)
+    
+            # Remove Punctuations, Numbers, and Special Characters
+            english_punctuations = string.punctuation
+            punctuations_list = english_punctuations
+    
+            def cleaning_punctuations(tweets):
+                translator = str.maketrans('', '', punctuations_list)
+                return tweets.translate(translator)
+    
+            df['tweets'] = df['tweets'].apply(lambda x: cleaning_punctuations(x))
+    
+            # Repeating characters
+            def cleaning_repeating_char(tweets):
+                return re.sub(r'(.)1+', r'1', tweets)
+    
+            df['tweets'] = df['tweets'].apply(lambda x: cleaning_repeating_char(x))
+    
+            # Remove Number
+            def cleaning_numbers(data):
+                return re.sub('[0-9]+', '', data)
+    
+            df['tweets'] = df['tweets'].apply(lambda x: cleaning_numbers(x))
+    
+            # Remove short words
+            df['tweets'] = df['tweets'].apply(lambda x: ' '.join([w for w in x.split() if len(w) > 4]))
+    
+            # Remove hashtag
+            def remove_hashtags(tweets, pattern):
+                r = re.findall(pattern, tweets)
+    
+                for i in r:
+                    text = re.sub(i, '', tweets)
+                return tweets
+    
+            df['tweets'] = np.vectorize(remove_hashtags)(df['tweets'], "#[\W]*")
+    
+            # Emoji removal
+            def remove_emojis(string):
+                remove_emoji = re.compile(
+                    "["u"\U0001F600-\U0001F64F"  # emoticons
+                    u"\U0001F300-\U0001F5FF"  # symbols & pictographs
+                    u"\U0001F680-\U0001F6FF"  # transport & map symbols
+                    u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
+                    "]+", flags=re.UNICODE)
+                return remove_emoji.sub(r'', string).encode("utf-8").decode("utf-8")
+    
+            df['tweets'] = df['tweets'].apply(remove_emojis)
+    
+            # Lemmatization
+            lemmatizer = WordNetLemmatizer()
+            wordnet_map = {"N": wordnet.NOUN, "V": wordnet.VERB, "R": wordnet.ADV}
+    
+            def lemmatize_words(tweets):
+                pos_tagged_text = nltk.pos_tag(tweets.split())
+                return " ".join([lemmatizer.lemmatize(word, wordnet_map.get(pos[0], wordnet.NOUN)) for word, pos in
+                                 pos_tagged_text])
+    
+            # Prepare Stop words
+            stop_words = stopwords.words('english')
+            stop_words = ['from', 'https', 'twitter', 'still', "nor", "aren't", 'couldn', "couldn't", 'didn',
+                          "didn't", "doesn", "doesn't", "don", "don't", 'hadn', "hadn't", 'hasn', "hasn't", 'haven',
+                          "haven't", 'isn', "isn't", 'mightn', "mightn't", 'mustn', "mustn't", 'needn', "needn't",
+                          "shan't", 'shan', "shan't", 'shouldn', "shouldn't", "that'll", 'wasn', "wasn't", 'weren',
+                          "weren't", "won't", 'wouldn', "wouldn't"]
+    
+            def remove_stopwords(tweets):
+                return [[word for word in simple_preprocess(str(tweets)) if word not in stop_words] for tweets in
+                        tweets]
+    
+            df['stopwords'] = remove_stopwords(df['tweets'])
+    
+            # Tokenize Word
+            def tokenize(tweets):
+                tokenizer = RegexpTokenizer(r'\w+')
+                return tokenizer.tokenize(tweets)
+    
+            df['tweets'] = df['tweets'].apply(tokenize).tolist()
+    
+            df.drop_duplicates(subset='tweets', keep='first', inplace=True)
+    
+            # Display the count of unique rows after removing duplicates
+            st.write(f"Number of unique tweets after removing duplicates: {len(df)}")
+    
+            # Initialize sentiment counts
+            sentiment_counts = {"Positive": 0, "Negative": 0}
+    
+            def calculate_vader_sentiment(tweet_list, threshold=0.05):
+                sentiments = []
+                vader_scores = []
+            
+                for tweet in tweet_list:
+                    # Join the list of tokens into a single string
+                    text = ' '.join(tweet)
+            
+                    sentiment_scores = sid.polarity_scores(text)
+                    compound_score = sentiment_scores['compound']
+            
+                    if compound_score >= threshold:
+                        sentiments.append('positive')
+                    else:
+                        sentiments.append('negative')
+            
+                    # Append the VADER score for each word in the tweet
+                    word_scores = [sid.polarity_scores(word)['compound'] for word in tweet]
+                    vader_scores.append(word_scores)
+            
+                return sentiments, vader_scores
+            
+            # Apply the modified function to the 'tweets' column
+            df['sentiment'], df['vader_scores'] = calculate_vader_sentiment(df['tweets'])
+            df['score'] = df['tweets'].apply(lambda x: sid.polarity_scores(' '.join(x))['compound'])
+            df.drop(columns=['query'], inplace=True)
 
         # Calculate percentages
         if df is not None:
