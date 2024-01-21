@@ -451,7 +451,7 @@ def visualize(df):
         # Display the ROC-AUC Curve for SVM Model
         st.write("SVM Model ROC-AUC Curve:")
         plt.figure(figsize=(8, 6))
-                plt.plot(fpr_positive, tpr_positive, color='darkorange', lw=2, label='ROC curve (area = {:.2f}) for Positive Class'.format(auc(fpr_positive, tpr_positive)))
+        plt.plot(fpr_positive, tpr_positive, color='darkorange', lw=2, label='ROC curve (area = {:.2f}) for Positive Class'.format(auc(fpr_positive, tpr_positive)))
         plt.plot(fpr_neutral, tpr_neutral, color='lightgreen', lw=2, linestyle='--', label='ROC curve (area = {:.2f}) for Negative Class'.format(auc(fpr_neutral, tpr_neutral)))
         plt.plot(fpr_negative, tpr_negative, color='navy', lw=2, linestyle='--', label='ROC curve (area = {:.2f}) for Negative Class'.format(auc(fpr_negative, tpr_negative)))
         plt.xlabel('False Positive Rate')
