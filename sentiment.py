@@ -197,7 +197,7 @@ def Home():
         # Calculate percentages
         if df is not None:
             # Initialize sentiment counts
-            sentiment_counts = {"Positive": 0, "Negative": 0, "Nuetral":0}
+            sentiment_counts = {"Positive": 0, "Negative": 0, "Neutral":0}
 
             # Create Streamlit progress bar
             total_progress = st.progress(0)
