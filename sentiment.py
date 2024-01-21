@@ -164,7 +164,7 @@ def Home():
         # Initialize sentiment counts
         sentiment_counts = {"Positive": 0, "Negative": 0}
 
-        def calculate_vader_sentiment(tweet_list, threshold=0.05):
+        def calculate_vader_sentiment(tweet_list):
             sentiments = []
             vader_scores = []
         
@@ -175,16 +175,19 @@ def Home():
                 sentiment_scores = sid.polarity_scores(text)
                 compound_score = sentiment_scores['compound']
         
-                if compound_score >= threshold:
+                if compound_score >= 0.05:
                     sentiments.append('positive')
-                else:
+                elif compound_score <= -0.05:
                     sentiments.append('negative')
+                else:
+                    sentiments.append('neutral')
         
                 # Append the VADER score for each word in the tweet
                 word_scores = [sid.polarity_scores(word)['compound'] for word in tweet]
                 vader_scores.append(word_scores)
         
             return sentiments, vader_scores
+
         
         # Apply the modified function to the 'tweets' column
         df['sentiment'], df['vader_scores'] = calculate_vader_sentiment(df['tweets'])
@@ -194,7 +197,7 @@ def Home():
         # Calculate percentages
         if df is not None:
             # Initialize sentiment counts
-            sentiment_counts = {"Positive": 0, "Negative": 0}
+            sentiment_counts = {"Positive": 0, "Negative": 0, "Nuetral":0}
 
             # Create Streamlit progress bar
             total_progress = st.progress(0)
@@ -213,6 +216,8 @@ def Home():
                     sentiment_counts["Positive"] += 1
                 elif compound_score <= -0.05:
                     sentiment_counts["Negative"] += 1
+                else:
+                    sentiments.append('neutral') += 1
 
                 # Update Streamlit total progress bar
                 total_progress.progress((i + 1) / len(df))
@@ -223,13 +228,17 @@ def Home():
             # Display sentiment percentages
             total_tweets = len(df)
             vader_positive_percentage = (sentiment_counts["Positive"] / total_tweets) * 100
+            vader_neutral_percentage = (sentiment_counts["Neutral"] / total_tweets) * 100
             vader_negative_percentage = (sentiment_counts["Negative"] / total_tweets) * 100
+
             st.write("Sentiment Analysis Results:")
 
             # Display individual progress bars for positive, negative, and neutral
             st.write("Progress by Sentiment:")
             st.write("Positive Percentage: {:.2f}%".format(vader_positive_percentage))
             st.progress(vader_positive_percentage / 100)
+            st.write("Neutral Percentage: {:.2f}%".format(vader_neutral_percentage))
+            st.progress(vader_neutal_percentage / 100)
             st.write("Negative Percentage: {:.2f}%".format(vader_negative_percentage))
             st.progress(vader_negative_percentage / 100)
             st.dataframe(df, use_container_width=True)
