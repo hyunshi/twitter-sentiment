@@ -61,15 +61,19 @@ def Home():
         df = pd.read_csv(upl, encoding='latin-1')
         st.dataframe(df, use_container_width=True)
         # Add search bar
-        search_query = st.text_input("Search tweets", "")
+        search_query = st.text_input("Search tweets:", "")
         if search_query:
             df = df[df['tweets'].str.contains(search_query, case=False)]
-
-        # Add sorting dropdown
-        sort_by = st.selectbox("Sort by", ['sentiment', 'score'])
-        if sort_by:
-            df = df.sort_values(sort_by, ascending=False)
-                                
+    
+        # Add sorting functionality
+        sort_option = st.selectbox("Sort by:", ["Date", "Score"])
+        if sort_option == "Date":
+            df.sort_values(by='date_column_name', inplace=True)  # Replace 'date_column_name' with the actual date column name
+        elif sort_option == "Score":
+            df.sort_values(by='score', inplace=True)
+    
+        # Display the updated dataframe
+        st.dataframe(df, use_container_width=True)      
         # Data cleaning and sentiment analysis code
         # convert all tweet into lowercase
         df['tweets'] = df['tweets'].astype(str).str.lower()
