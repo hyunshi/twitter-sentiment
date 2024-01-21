@@ -217,7 +217,7 @@ def Home():
                 elif compound_score <= -0.05:
                     sentiment_counts["Negative"] += 1
                 else:
-                    sentiments.append('neutral') += 1
+                    sentiment_counts["Neutral"] += 1
 
                 # Update Streamlit total progress bar
                 total_progress.progress((i + 1) / len(df))
