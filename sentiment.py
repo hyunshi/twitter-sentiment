@@ -60,6 +60,15 @@ def Home():
     if upl:
         df = pd.read_csv(upl, encoding='latin-1')
         st.dataframe(df, use_container_width=True)
+        # Add search bar
+        search_query = st.text_input("Search tweets", "")
+        if search_query:
+            df = df[df['tweets'].str.contains(search_query, case=False)]
+
+        # Add sorting dropdown
+        sort_by = st.selectbox("Sort by", ['sentiment', 'score'])
+        if sort_by:
+            df = df.sort_values(sort_by, ascending=False)
 
         # Data cleaning and sentiment analysis code
         # convert all tweet into lowercase
