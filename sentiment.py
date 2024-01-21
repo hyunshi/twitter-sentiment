@@ -306,7 +306,7 @@ def visualize(df):
     num_features = X.shape[1]
 
     # Convert sentiment labels to numerical values
-    y_numerical = y.map({'positive': 0, 'negative': 1})
+    y_numerical = y.map({'positive': 0, 'neutral': 1, 'negative': 2})
 
     # Apply SMOTE to balance the classes
     smote = SMOTE(random_state=42)
@@ -321,22 +321,25 @@ def visualize(df):
         y_pred = model.predict(X_test)
 
         # Convert sentiment labels to numerical values
-        y_numerical = label_binarize(y_test, classes=['positive', 'negative'])
+        y_numerical = label_binarize(y_test, classes=['positive', 'neutral', 'negative'])
 
         # Print the evaluation metrics for the dataset.
-        classification_rep = classification_report(y_test, y_pred, target_names=['positive', 'negative'], output_dict=True)
+        classification_rep = classification_report(y_test, y_pred, target_names=['positive', 'neutral', 'negative'], output_dict=True)
         classification_rep1 = classification_report(y_test, y_pred)
         st.write("Classification Report:")
         st.text(classification_rep1)
     
         # Extract precision, recall, and F1-score values as percentages
         precision_positive = classification_rep['positive']['precision'] * 100
+        precision_neutal = classification_rep['neutral']['precision'] * 100
         precision_negative = classification_rep['negative']['precision'] * 100
     
         recall_positive = classification_rep['positive']['recall'] * 100
+        recall_neutral = classification_rep['neutral']['recall'] * 100
         recall_negative = classification_rep['negative']['recall'] * 100
     
         f1_positive = classification_rep['positive']['f1-score'] * 100
+        f1_neutral = classification_rep['neutral']['f1-score'] * 100
         f1_negative = classification_rep['negative']['f1-score'] * 100
     
         # Create a bar chart for precision, recall, and F1-score
@@ -344,12 +347,14 @@ def visualize(df):
         fig, ax = plt.subplots()
         labels = ['Precision', 'Recall', 'F1-Score']
         positive_values = [precision_positive, recall_positive, f1_positive]
+        neutral_values = [precision_neutral, recall_neutral, f1_neutral]
         negative_values = [precision_negative, recall_negative, f1_negative]
     
         width = 0.35  # the width of the bars
         ind = np.arange(len(labels))  # the label locations
     
         ax.bar(ind - width/2, positive_values, width, label='Positive')
+        ax.bar(ind + width/2, neutral_values, width, label='Neutral')
         ax.bar(ind + width/2, negative_values, width, label='Negative')
     
         ax.set_xlabel('Metrics')
@@ -362,9 +367,9 @@ def visualize(df):
         st.pyplot(fig)
         # Compute and plot the Confusion matrix
         cf_matrix = confusion_matrix(y_test, y_pred)
-        categories = ['Positive', 'Negative']
+        categories = ['Positive', 'Neutral', 'Negative']
         group_percentages = ['{0:.2%}'.format(value) for value in cf_matrix.flatten() / np.sum(cf_matrix)]
-        group_names = ['True Positive', 'False Positive', 'False Negative', 'True Negative']
+        group_names = ['True Positive', 'False Negative', 'False Negative','False Postive','True Negative', 'True Negative', 'False Positive', 'True Negative','True Negative']
         labels = [f'{v1}\n{v2}' for v1, v2 in zip(group_names, group_percentages)]
         labels = np.asarray(labels).reshape(len(categories), len(categories))
         
@@ -379,21 +384,22 @@ def visualize(df):
         st.pyplot(plt)
         
         # Compute and plot the ROC-AUC curve for positive class
-        proba_positive_class = model.predict_proba(X_test)[:, 1]
-        fpr_positive, tpr_positive, thresholds_positive = roc_curve(y_test, proba_positive_class, pos_label=1)
+        proba_positive_class = best_bnb_model.predict_proba(X_test)[:, 0]  # Use the correct index for positive class
+        fpr_positive, tpr_positive, thresholds_positive = roc_curve(y_test, proba_positive_class, pos_label=0)
         
-        # Compute and plot the ROC-AUC curve for negative class
-        proba_negative_class = model.predict_proba(X_test)[:, 0]
-        fpr_negative, tpr_negative, thresholds_negative = roc_curve(y_test, proba_negative_class, pos_label=0)
+        proba_neutral_class = best_bnb_model.predict_proba(X_test)[:, 1]  # Use the correct index for neutral class
+        fpr_neutral, tpr_neutral, thresholds_neutral = roc_curve(y_test, proba_neutral_class, pos_label=1)
+        
+        proba_negative_class = best_bnb_model.predict_proba(X_test)[:, 2]  # Use the correct index for negative class
+        fpr_negative, tpr_negative, thresholds_negative = roc_curve(y_test, proba_negative_class, pos_label=2)
         
         # Display the ROC-AUC Curve
         st.write("ROC-AUC Curve:")
         plt.figure(figsize=(8, 6))
         
-        # Plot the ROC curve for the positive class
+        # Plot the ROC curve for the positive class, neutral, negative
         plt.plot(fpr_positive, tpr_positive, color='darkorange', lw=2, label='ROC curve (area = {:.2f}) for Positive Class'.format(auc(fpr_positive, tpr_positive)))
-        
-        # Plot the ROC curve for the negative class
+        plt.plot(fpr_neutral, tpr_neutral, color='lightgreen', lw=2, linestyle='--', label='ROC curve (area = {:.2f}) for Negative Class'.format(auc(fpr_neutral, tpr_neutral)))
         plt.plot(fpr_negative, tpr_negative, color='navy', lw=2, linestyle='--', label='ROC curve (area = {:.2f}) for Negative Class'.format(auc(fpr_negative, tpr_negative)))
         
         plt.xlabel('False Positive Rate')
@@ -407,7 +413,7 @@ def visualize(df):
         y_pred = model.predict(X_test)
     
         # Convert sentiment labels to numerical values
-        y_numerical = label_binarize(y_test, classes=['positive', 'negative'])
+        y_numerical = label_binarize(y_test, classes=['positive', 'neutral', 'negative'])
     
         # Print the evaluation metrics for the dataset.
         classification_rep = classification_report(y_test, y_pred)
@@ -416,9 +422,9 @@ def visualize(df):
     
         # Compute and plot the Confusion matrix
         cf_matrix = confusion_matrix(y_test, y_pred)
-        categories = ['Positive', 'Negative']
+        categories = ['Positive', 'Neutral', 'Negative']
         group_percentages = ['{0:.2%}'.format(value) for value in cf_matrix.flatten() / np.sum(cf_matrix)]
-        group_names = ['True Positive', 'False Positive', 'False Negative', 'True Negative']
+        group_names = ['True Positive', 'False Negative', 'False Negative','False Postive','True Negative', 'True Negative', 'False Positive', 'True Negative','True Negative']
         labels = [f'{v1}\n{v2}' for v1, v2 in zip(group_names, group_percentages)]
         labels = np.asarray(labels).reshape(len(categories), len(categories))
     
@@ -433,13 +439,21 @@ def visualize(df):
         st.pyplot(plt)
     
         # Compute and plot the ROC-AUC curve for positive class
-        proba_positive_class = model.decision_function(X_test)
-        fpr_positive, tpr_positive, thresholds_positive = roc_curve(y_test, proba_positive_class)
+        proba_positive_class_svm = svm_model.decision_function(X_test)[:, 0]  # Use the correct index for positive class
+        fpr_positive_svm, tpr_positive_svm, thresholds_positive_svm = roc_curve(y_test, proba_positive_class_svm, pos_label=0)
+        
+        proba_neutral_class_svm = svm_model.decision_function(X_test)[:, 1]  # Use the correct index for neutral class
+        fpr_neutral_svm, tpr_neutral_svm, thresholds_neutral_svm = roc_curve(y_test, proba_neutral_class_svm, pos_label=1)
+        
+        proba_negative_class_svm = svm_model.decision_function(X_test)[:, 2]  # Use the correct index for negative class
+        fpr_negative_svm, tpr_negative_svm, thresholds_negative_svm = roc_curve(y_test, proba_negative_class_svm, pos_label=2)
     
         # Display the ROC-AUC Curve for SVM Model
         st.write("SVM Model ROC-AUC Curve:")
         plt.figure(figsize=(8, 6))
-        plt.plot(fpr_positive, tpr_positive, color='darkorange', lw=2, label='SVM ROC curve (area = {:.2f})'.format(auc(fpr_positive, tpr_positive)))
+                plt.plot(fpr_positive, tpr_positive, color='darkorange', lw=2, label='ROC curve (area = {:.2f}) for Positive Class'.format(auc(fpr_positive, tpr_positive)))
+        plt.plot(fpr_neutral, tpr_neutral, color='lightgreen', lw=2, linestyle='--', label='ROC curve (area = {:.2f}) for Negative Class'.format(auc(fpr_neutral, tpr_neutral)))
+        plt.plot(fpr_negative, tpr_negative, color='navy', lw=2, linestyle='--', label='ROC curve (area = {:.2f}) for Negative Class'.format(auc(fpr_negative, tpr_negative)))
         plt.xlabel('False Positive Rate')
         plt.ylabel('True Positive Rate')
         plt.title('SVM Model Receiver Operating Characteristic (ROC) Curve')
