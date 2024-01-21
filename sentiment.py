@@ -66,11 +66,12 @@ def Home():
             df = df[df['tweets'].str.contains(search_query, case=False)]
     
         # Add sorting functionality
-        sort_option = st.selectbox("Sort by:", ["Date", "Score"])
-        if sort_option == "Date":
-            df.sort_values(by='date_column_name', inplace=True)  # Replace 'date_column_name' with the actual date column name
+        sort_option = st.selectbox("Sort by:", ["Tweets", "Score"])
+        if sort_option == "Tweets" and 'Tweets' in df.columns:
+            df.sort_values(by='Tweets', inplace=True)
         elif sort_option == "Score":
             df.sort_values(by='score', inplace=True)
+
     
         # Display the updated dataframe
         st.dataframe(df, use_container_width=True)      
