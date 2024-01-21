@@ -238,7 +238,7 @@ def Home():
             st.write("Positive Percentage: {:.2f}%".format(vader_positive_percentage))
             st.progress(vader_positive_percentage / 100)
             st.write("Neutral Percentage: {:.2f}%".format(vader_neutral_percentage))
-            st.progress(vader_neutal_percentage / 100)
+            st.progress(vader_neutral_percentage / 100)
             st.write("Negative Percentage: {:.2f}%".format(vader_negative_percentage))
             st.progress(vader_negative_percentage / 100)
             st.dataframe(df, use_container_width=True)
