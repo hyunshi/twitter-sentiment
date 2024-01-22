@@ -322,55 +322,6 @@ def visualize(df):
     X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.1, random_state=42)
     st.write(f"Number of Features (Vocabulary Size): {num_features}")
 
-    def log_bernoulli_probs(V, prior, cond_prob, d, V_star):
-        score = np.zeros(len(prior))
-        for c in range(len(prior)):
-            score[c] = math.log(prior[c])
-            for t in V_star:
-                if t in V[c]:
-                    score[c] += math.log(cond_prob[t][c] + 1)
-                else:
-                    score[c] += math.log(1 - cond_prob[t][c])
-        return score
-    
-    def bernoulli_nb_classifier(X_train, y_train, X_test, vectorizer):
-        label_encoder = LabelEncoder()
-        y_train_encoded = label_encoder.fit_transform(y_train)
-        
-        N = X_train.shape[0]
-        N_class = len(np.unique(y_train_encoded))
-        V = [[] for _ in range(N_class)]
-        prior = np.zeros(N_class)
-    
-        # Determine vocabulary size
-        vocab_size = X_train.shape[1]
-        cond_prob = np.zeros((vocab_size, N_class))
-    
-        # Compute prior and conditional probabilities
-        for i in range(N):
-            c = y_train_encoded[i]
-            indices = np.where(X_train[i].toarray() == 1)[1]
-            V[c].extend(indices) if indices.size > 0 else None
-            prior[c] += 1
-    
-        for c in range(N_class):
-            prior[c] /= N
-            for t in range(vocab_size):
-                cond_prob[t][c] = sum(X_train[y_train_encoded == c, t]) / sum(X_train[:, t])
-    
-        # Train classifier
-        V_star = set()
-        for i in range(X_test.shape[0]):
-            indices_star = np.where(X_test[i].toarray() == 1)[1]
-            V_star.update(indices_star) if indices_star.size > 0 else None
-    
-        y_pred = np.zeros(X_test.shape[0])
-        for i in range(X_test.shape[0]):
-            scores = log_bernoulli_probs(V, prior, cond_prob, X_train, V_star)
-            y_pred[i] = np.argmax(scores)
-    
-        return y_pred
-
     def model_Evaluate(model):
         # Predict values for Test dataset
         y_pred = model.predict(X_test)
@@ -470,11 +421,6 @@ def visualize(df):
     y_pred_original = best_bnb_model.predict(X_test)
 
     st.subheader("Evaluation for Bernoulli Naive Bayes Model(try):")
-    # Example usage
-    X_train_vectorized = vectorizer.fit_transform(df['tweets'].apply(lambda x: ' '.join(x)))
-    y_train = df['sentiment']
-    y_pred = bernoulli_nb_classifier(X_train_vectorized, y_train, X_test, vectorizer)
-
 
 def sideBar():
     with st.sidebar:
