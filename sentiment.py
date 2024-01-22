@@ -346,8 +346,7 @@ def visualize(df):
         # Compute prior and conditional probabilities
         for i in range(N):
             c = y_train[i]
-            V[c].extend(np.where(X_train[i] == 1)[0].tolist())  # Update to use numpy's where
-    
+            V[c].extend(np.where(X_train[i] == 1)[0].tolist()) if 1 in X_train[i] else None
             prior[c] += 1
     
         for c in range(N_class):
@@ -358,7 +357,7 @@ def visualize(df):
         # Train classifier
         V_star = set()
         for i in range(X_test.shape[0]):
-            V_star.update(np.where(X_test[i] == 1)[0].tolist())  # Update to use numpy's where
+            V_star.update(np.where(X_test[i] == 1)[0].tolist()) if 1 in X_test[i] else None
     
         y_pred = np.zeros(X_test.shape[0])
         for i in range(X_test.shape[0]):
@@ -367,8 +366,6 @@ def visualize(df):
     
         return y_pred
 
-
-    
     def model_Evaluate(model):
         # Predict values for Test dataset
         y_pred = model.predict(X_test)
