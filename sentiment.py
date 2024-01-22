@@ -333,8 +333,8 @@ def visualize(df):
                 cond_prob[t][c] = sum(X_train[y_train == c, t]) / sum(X_train[:, t])
         
         # Train classifier
-         V_star = set()
-         for i in range(X_test.shape[0]):
+        V_star = set()
+        for i in range(X_test.shape[0]):
             V_star.update(vectorizer.get_feature_names_out().tolist()[X_test[i] == 1])
     
         y_pred = np.zeros(X_test.shape[0])
