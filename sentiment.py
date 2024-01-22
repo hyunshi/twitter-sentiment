@@ -339,14 +339,14 @@ def visualize(df):
         V = [[] for _ in range(N_class)]
         prior = np.zeros(N_class)
     
-        # Use get_feature_names_out() to get feature names and determine vocabulary size
-        vocab_size = len(vectorizer.get_feature_names_out())
+        # Determine vocabulary size
+        vocab_size = X_train.shape[1]
         cond_prob = np.zeros((vocab_size, N_class))
     
         # Compute prior and conditional probabilities
         for i in range(N):
             c = y_train[i]
-            V[c].extend(vectorizer.get_feature_names_out().tolist()[X_train[i] == 1])
+            V[c].extend(np.where(X_train[i] == 1)[0])  # Update to use numpy's where
             prior[c] += 1
     
         for c in range(N_class):
@@ -357,7 +357,7 @@ def visualize(df):
         # Train classifier
         V_star = set()
         for i in range(X_test.shape[0]):
-            V_star.update(vectorizer.get_feature_names_out().tolist()[X_test[i] == 1])
+            V_star.update(np.where(X_test[i] == 1)[0])  # Update to use numpy's where
     
         y_pred = np.zeros(X_test.shape[0])
         for i in range(X_test.shape[0]):
