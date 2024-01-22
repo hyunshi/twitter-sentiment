@@ -22,7 +22,7 @@ from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import classification_report, confusion_matrix, roc_curve, auc, roc_auc_score
 from sklearn.naive_bayes import MultinomialNB, BernoulliNB, GaussianNB
-from sklearn.preprocessing import label_binarize
+from sklearn.preprocessing import label_binarize, LabelEncoder
 from PIL import Image
 from tqdm import tqdm
 from wordcloud import WordCloud
@@ -334,8 +334,11 @@ def visualize(df):
         return score
     
     def bernoulli_nb_classifier(X_train, y_train, X_test, vectorizer):
+        label_encoder = LabelEncoder()
+        y_train_encoded = label_encoder.fit_transform(y_train)
+        
         N = X_train.shape[0]
-        N_class = len(np.unique(y_train))
+        N_class = len(np.unique(y_train_encoded))
         V = [[] for _ in range(N_class)]
         prior = np.zeros(N_class)
     
@@ -345,7 +348,7 @@ def visualize(df):
     
         # Compute prior and conditional probabilities
         for i in range(N):
-            c = y_train[i]
+            c = y_train_encoded[i]
             indices = np.where(X_train[i].toarray() == 1)[1]
             V[c].extend(indices) if indices.size > 0 else None
             prior[c] += 1
@@ -353,7 +356,7 @@ def visualize(df):
         for c in range(N_class):
             prior[c] /= N
             for t in range(vocab_size):
-                cond_prob[t][c] = sum(X_train[y_train == c, t]) / sum(X_train[:, t])
+                cond_prob[t][c] = sum(X_train[y_train_encoded == c, t]) / sum(X_train[:, t])
     
         # Train classifier
         V_star = set()
