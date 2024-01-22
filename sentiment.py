@@ -338,7 +338,10 @@ def visualize(df):
         N_class = len(np.unique(y_train))
         V = [[] for _ in range(N_class)]
         prior = np.zeros(N_class)
-        cond_prob = np.zeros((vectorizer.vocabulary_size_, N_class))
+    
+        # Use get_feature_names_out() to get feature names and determine vocabulary size
+        vocab_size = len(vectorizer.get_feature_names_out())
+        cond_prob = np.zeros((vocab_size, N_class))
     
         # Compute prior and conditional probabilities
         for i in range(N):
@@ -348,7 +351,7 @@ def visualize(df):
     
         for c in range(N_class):
             prior[c] /= N
-            for t in range(vectorizer.vocabulary_size_):
+            for t in range(vocab_size):
                 cond_prob[t][c] = sum(X_train[y_train == c, t]) / sum(X_train[:, t])
     
         # Train classifier
@@ -362,6 +365,7 @@ def visualize(df):
             y_pred[i] = np.argmax(scores)
     
         return y_pred
+
     
     def model_Evaluate(model):
         # Predict values for Test dataset
