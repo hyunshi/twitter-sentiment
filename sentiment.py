@@ -320,6 +320,7 @@ def visualize(df):
         V = [[] for _ in range(N_class)]
         prior = np.zeros(N_class)
         cond_prob = np.zeros((vectorizer.vocabulary_size_, N_class))
+        num_features = len(vectorizer.get_feature_names_out())
     
         # Compute prior and conditional probabilities
         for i in range(N):
@@ -328,13 +329,12 @@ def visualize(df):
             prior[c] += 1
     
         for c in range(N_class):
-            prior[c] /= N
-            for t in range(vectorizer.vocabulary_size_):
+            for t in range(num_features):
                 cond_prob[t][c] = sum(X_train[y_train == c, t]) / sum(X_train[:, t])
-    
+        
         # Train classifier
-        V_star = set()
-        for i in range(X_test.shape[0]):
+         V_star = set()
+         for i in range(X_test.shape[0]):
             V_star.update(vectorizer.get_feature_names_out().tolist()[X_test[i] == 1])
     
         y_pred = np.zeros(X_test.shape[0])
