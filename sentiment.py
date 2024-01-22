@@ -303,6 +303,48 @@ def visualize(df):
 
         return grid_search.best_estimator_
 
+     def bernoulli_nb_classifier(X_train, y_train, X_test, vectorizer):
+        # Convert the sparse matrix to a dense array
+        X_train_dense = X_train.toarray()
+    
+        # Extract the feature names from the vectorizer
+        feature_names = vectorizer.get_feature_names_out()
+    
+        # Convert the list of arrays to a 2D NumPy array
+        X_test_dense = X_test.toarray()
+    
+        # Create a dictionary to store the vocabulary and their indices
+        vocab_dict = {feature_names[i]: i for i in range(len(feature_names))}
+    
+        # Initialize parameters
+        alpha = 1.0  # Laplace smoothing parameter
+    
+        # Get the unique classes and their counts
+        unique_classes, class_counts = np.unique(y_train, return_counts=True)
+    
+        # Calculate prior probabilities
+        prior_probs = class_counts / len(y_train)
+    
+        # Initialize arrays to store likelihood probabilities
+        likelihood_probs = np.zeros((len(unique_classes), X_train_dense.shape[1]))
+    
+        # Calculate likelihood probabilities with Laplace smoothing
+        for i, c in enumerate(unique_classes):
+            class_indices = (y_train == c)
+            class_word_counts = np.sum(X_train_dense[class_indices], axis=0)
+            total_words_in_class = np.sum(class_word_counts)
+            likelihood_probs[i, :] = (class_word_counts + alpha) / (total_words_in_class + alpha * 2)
+    
+        # Make predictions for each document in the test set
+        y_pred = np.zeros(X_test_dense.shape[0], dtype=int)
+        for i in range(X_test_dense.shape[0]):
+            doc_probs = np.zeros(len(unique_classes))
+            for j, c in enumerate(unique_classes):
+                doc_probs[j] = np.log(prior_probs[j]) + np.sum(X_test_dense[i] * np.log(likelihood_probs[j, :]))
+            y_pred[i] = np.argmax(doc_probs)
+    
+        return y_pred
+
     vectorizer = TfidfVectorizer(max_features=50000, stop_words='english', norm='l2', sublinear_tf=True)
 
     # Convert the list of arrays to a 2D NumPy array
@@ -419,6 +461,7 @@ def visualize(df):
     st.write(f"Standard Deviation: {np.std(cv_scores)}")
     model_Evaluate(best_bnb_model)
     y_pred_original = best_bnb_model.predict(X_test)
+    y_pred = bernoulli_nb_classifier(X_train, y_train, X_test, vectorizer)
 
 def sideBar():
     with st.sidebar:
