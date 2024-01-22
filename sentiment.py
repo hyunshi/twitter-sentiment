@@ -303,47 +303,6 @@ def visualize(df):
 
         return grid_search.best_estimator_
 
-    def log_bernoulli_probs(V, prior, cond_prob, d, V_star):
-        score = np.zeros(len(prior))
-        for c in range(len(prior)):
-            score[c] = math.log(prior[c])
-            for t in V_star:
-                if t in V[c]:
-                    score[c] += math.log(cond_prob[t][c] + 1)
-                else:
-                    score[c] += math.log(1 - cond_prob[t][c])
-        return score
-    
-    def bernoulli_nb_classifier(X_train, y_train, X_test, vectorizer):
-        N = X_train.shape[0]
-        N_class = len(np.unique(y_train))
-        V = [[] for _ in range(N_class)]
-        prior = np.zeros(N_class)
-        cond_prob = np.zeros((vectorizer.vocabulary_size_, N_class))
-        num_features = len(vectorizer.get_feature_names_out())
-    
-        # Compute prior and conditional probabilities
-        for i in range(N):
-            c = y_train[i]
-            V[c].extend(vectorizer.get_feature_names_out().tolist()[X_train[i] == 1])
-            prior[c] += 1
-    
-        for c in range(N_class):
-            for t in range(num_features):
-                cond_prob[t][c] = sum(X_train[y_train == c, t]) / sum(X_train[:, t])
-        
-        # Train classifier
-        V_star = set()
-        for i in range(X_test.shape[0]):
-            V_star.update(vectorizer.get_feature_names_out().tolist()[X_test[i] == 1])
-    
-        y_pred = np.zeros(X_test.shape[0])
-        for i in range(X_test.shape[0]):
-            scores = log_bernoulli_probs(V, prior, cond_prob, X_train, V_star)
-            y_pred[i] = np.argmax(scores)
-    
-        return y_pred
-        
     vectorizer = TfidfVectorizer(max_features=50000, stop_words='english', norm='l2', sublinear_tf=True)
 
     # Convert the list of arrays to a 2D NumPy array
@@ -462,9 +421,6 @@ def visualize(df):
     y_pred_original = best_bnb_model.predict(X_test)
 
     st.subheader("Evaluation for Bernoulli Naive Bayes Model(try):")
-    X_train_vectorized = vectorizer.fit_transform(df['tweets'].apply(lambda x: ' '.join(x)))
-    y_train = df['sentiment']
-    y_pred = bernoulli_nb_classifier(X_train_vectorized, y_train, X_test, vectorizer)
 
 def sideBar():
     with st.sidebar:
