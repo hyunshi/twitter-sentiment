@@ -322,6 +322,59 @@ def visualize(df):
     X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.1, random_state=42)
     st.write(f"Number of Features (Vocabulary Size): {num_features}")
 
+    def bernoulli_nb_classifier(X_train, y_train, X_test, vectorizer):
+        # Convert the sparse matrix to a dense array
+        X_train_dense = X_train.toarray()
+    
+        # Extract the feature names from the vectorizer
+        feature_names = vectorizer.get_feature_names_out()
+    
+        # Convert the list of arrays to a 2D NumPy array
+        X_test_dense = X_test.toarray()
+    
+        # Create a dictionary to store the vocabulary and their indices
+        vocab_dict = {feature_names[i]: i for i in range(len(feature_names))}
+    
+        # Initialize parameters
+        alpha = 1.0  # Laplace smoothing parameter
+    
+        # Get the unique classes and their counts
+        unique_classes, class_counts = np.unique(y_train, return_counts=True)
+    
+        # Calculate prior probabilities
+        prior_probs = class_counts / len(y_train)
+    
+        # Initialize arrays to store likelihood probabilities
+        likelihood_probs = np.zeros((len(unique_classes), X_train_dense.shape[1]))
+    
+        # Calculate likelihood probabilities with Laplace smoothing
+        for i, c in enumerate(unique_classes):
+            class_indices = (y_train == c)
+            class_word_counts = X_train_dense[class_indices].sum(axis=0)
+            total_words_in_class = class_word_counts.sum()
+            likelihood_probs[i, :] = (class_word_counts + alpha) / (total_words_in_class + alpha * 2)
+    
+        # Calculate log probabilities for faster computation
+        log_prior_probs = np.log(prior_probs)
+        log_likelihood_probs = np.log(likelihood_probs)
+    
+        # Initialize array to store predictions
+        y_pred = np.zeros(X_test_dense.shape[0])
+    
+        # Make predictions for each document in the test set
+        for i in range(X_test_dense.shape[0]):
+            document_vector = X_test_dense[i, :]
+            log_probs = np.zeros(len(unique_classes))
+    
+            for j, c in enumerate(unique_classes):
+                # Calculate log-likelihood for the current class
+                log_probs[j] = log_prior_probs[j] + np.sum(document_vector * log_likelihood_probs[j, :])
+    
+            # Assign the class with the highest log probability as the predicted class
+            y_pred[i] = unique_classes[np.argmax(log_probs)]
+    
+        return y_pred
+
     def model_Evaluate(model):
         # Predict values for Test dataset
         y_pred = model.predict(X_test)
@@ -421,6 +474,8 @@ def visualize(df):
     y_pred_original = best_bnb_model.predict(X_test)
 
     st.subheader("Evaluation for Bernoulli Naive Bayes Model(try):")
+    y_pred = bernoulli_nb_classifier(X_train, y_train, X_test, vectorizer)
+            
 
 def sideBar():
     with st.sidebar:
