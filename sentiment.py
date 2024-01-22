@@ -321,6 +321,7 @@ def visualize(df):
     # Split the resampled data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.1, random_state=42)
     st.write(f"Number of Features (Vocabulary Size): {num_features}")
+    X_test = vectorizer.transform(test_data['tweets'].apply(lambda x: ' '.join(x)))
 
     def bernoulli_nb_classifier(X_train, y_train, X_test, vectorizer):
         # Convert the sparse matrix to a dense array
