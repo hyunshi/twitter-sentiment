@@ -303,7 +303,7 @@ def visualize(df):
 
         return grid_search.best_estimator_
 
-     def bernoulli_nb_classifier(X_train, y_train, X_test, vectorizer):
+    def bernoulli_nb_classifier(X_train, y_train, X_test, vectorizer):
         # Convert the sparse matrix to a dense array
         X_train_dense = X_train.toarray()
     
