@@ -303,6 +303,25 @@ def visualize(df):
 
         return grid_search.best_estimator_
 
+    vectorizer = TfidfVectorizer(max_features=50000, stop_words='english', norm='l2', sublinear_tf=True)
+
+    # Convert the list of arrays to a 2D NumPy array
+    X = vectorizer.fit_transform(df['tweets'].apply(lambda x: ' '.join(x)))
+    y = df['sentiment']
+
+    num_features = X.shape[1]
+
+    # Convert sentiment labels to numerical values
+    y_numerical = y.map({'positive': 0, 'negative': 1})
+
+    # Apply SMOTE to balance the classes
+    smote = SMOTE(random_state=42)
+    X_resampled, y_resampled = smote.fit_resample(X, y_numerical)
+    
+    # Split the resampled data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.1, random_state=42)
+    st.write(f"Number of Features (Vocabulary Size): {num_features}")
+
     def bernoulli_nb_classifier(X_train, y_train, X_test, vectorizer):
         # Convert the sparse matrix to a dense array
         X_train_dense = X_train.toarray()
@@ -344,25 +363,6 @@ def visualize(df):
             y_pred[i] = np.argmax(doc_probs)
     
         return y_pred
-
-    vectorizer = TfidfVectorizer(max_features=50000, stop_words='english', norm='l2', sublinear_tf=True)
-
-    # Convert the list of arrays to a 2D NumPy array
-    X = vectorizer.fit_transform(df['tweets'].apply(lambda x: ' '.join(x)))
-    y = df['sentiment']
-
-    num_features = X.shape[1]
-
-    # Convert sentiment labels to numerical values
-    y_numerical = y.map({'positive': 0, 'negative': 1})
-
-    # Apply SMOTE to balance the classes
-    smote = SMOTE(random_state=42)
-    X_resampled, y_resampled = smote.fit_resample(X, y_numerical)
-    
-    # Split the resampled data into training and testing sets
-    X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.1, random_state=42)
-    st.write(f"Number of Features (Vocabulary Size): {num_features}")
 
     def model_Evaluate(model):
         # Predict values for Test dataset
