@@ -248,11 +248,6 @@ def Home():
             st.write("Negative Percentage: {:.2f}%".format(vader_negative_percentage))
             st.progress(vader_negative_percentage / 100)
 
-            if st.button("Save"):
-                filename = st.text_input("Enter file name:", "processed_data.csv")
-                df.to_csv(filename, index=False)
-                st.success(f"DataFrame saved as {filename}")
-            st.dataframe(df, use_container_width=True)
             return df
 
 def visualize(df):
@@ -467,6 +462,18 @@ def visualize(df):
     model_Evaluate(best_bnb_model)
     y_pred_original = best_bnb_model.predict(X_test)
     y_pred = bernoulli_nb_classifier(X_train, y_train, X_test, vectorizer)
+
+def save_file(df):
+    csv = df.to_csv(index=False)
+    b64 = base64.b64encode(csv.encode()).decode()  # CSV to bytes
+    href = f'<a href="data:file/csv;base64,{b64}" download="filename.csv">Download CSV File</a>'
+    return href
+
+if st.button('Save File'):
+    filename = st.text_input('Enter a filename:', 'filename.csv')
+    if filename:
+        st.markdown(save_file(df), unsafe_allow_html=True)
+
 
 def sideBar():
     with st.sidebar:
