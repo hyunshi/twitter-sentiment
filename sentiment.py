@@ -248,14 +248,11 @@ def Home():
             st.progress(vader_negative_percentage / 100)
 
             # Save the cleaned data to a file
-            cleaned_file_name = st.text_input("Enter the name for the cleaned data file:")
-            if st.button("Save cleaned data"):
-                if cleaned_file_name:
-                    df.to_csv(cleaned_file_name + '.csv', index=False)
-                    st.success(f"Cleaned data saved as {cleaned_file_name}.csv")
-                else:
-                    st.warning("Please enter a valid file name.")
-
+            if st.button("Save Data"):
+                file_name = st.text_input("Enter file name:", "cleaned_data.csv")
+                if file_name:
+                    df.to_csv(file_name, index=False)
+                    st.success(f"Data saved as {file_name} successfully!")
             return df
 
 def visualize(df):
