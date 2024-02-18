@@ -60,7 +60,6 @@ def Home():
     upl = st.file_uploader('Upload file')
     if upl:
         df = pd.read_csv(upl, encoding='latin-1')
-        st.dataframe(df, use_container_width=True)
         # Add search bar
         search_query = st.text_input("Search tweets:", "")
         if search_query:
@@ -248,18 +247,16 @@ def Home():
             st.write("Negative Percentage: {:.2f}%".format(vader_negative_percentage))
             st.progress(vader_negative_percentage / 100)
 
+            # Save the cleaned data to a file
+            cleaned_file_name = st.text_input("Enter the name for the cleaned data file:")
+            if st.button("Save cleaned data"):
+                if cleaned_file_name:
+                    df.to_csv(cleaned_file_name + '.csv', index=False)
+                    st.success(f"Cleaned data saved as {cleaned_file_name}.csv")
+                else:
+                    st.warning("Please enter a valid file name.")
+
             return df
-
-def save_file(df):
-    csv = df.to_csv(index=False)
-    b64 = base64.b64encode(csv.encode()).decode()  # CSV to bytes
-    href = f'<a href="data:file/csv;base64,{b64}" download="filename.csv">Download CSV File</a>'
-    return href
-
-if st.button('Save File'):
-    filename = st.text_input('Enter a filename:', 'filename.csv')
-    if filename:
-        st.markdown(save_file(df), unsafe_allow_html=True)
 
 def visualize(df):
     # Calculate the number of positive and negative tweets
