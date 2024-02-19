@@ -256,24 +256,24 @@ def Home():
                     st.success(f"Data saved as {file_name} successfully!")
 
             st.markdown(get_binary_file_downloader_html(df, file_name, 'CSV'), unsafe_allow_html=True)
-        def get_binary_file_downloader_html(bin_file, file_label='File', button_text='Download', pickle_it=False):
-            """
-            Create a download link for a dataframe or a binary file.
-            """
-            bin_str = ''
-            if pickle_it:
-                bin_str = pickle.dumps(bin_file)
-            else:
-                bin_str = bin_file.to_csv(index=False).encode()
         
-            # Some strings <-> bytes conversions necessary here
-            b64 = base64.b64encode(bin_str).decode()
-            href = f'<a href="data:file/csv;base64,{b64}" download="{file_label}.csv">{button_text}</a>'
-            return href
-
         return df
 
-    
+def get_binary_file_downloader_html(bin_file, file_label='File', button_text='Download', pickle_it=False):
+    """
+    Create a download link for a dataframe or a binary file.
+    """
+    bin_str = ''
+    if pickle_it:
+        bin_str = pickle.dumps(bin_file)
+    else:
+        bin_str = bin_file.to_csv(index=False).encode()
+
+    # Some strings <-> bytes conversions necessary here
+    b64 = base64.b64encode(bin_str).decode()
+    href = f'<a href="data:file/csv;base64,{b64}" download="{file_label}.csv">{button_text}</a>'
+    return href
+
 def visualize(df):
     # Calculate the number of positive and negative tweets
     positive_count = df[df['sentiment'] == 'positive'].shape[0]
